@@ -1,38 +1,97 @@
 .App {
-  text-align: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: white
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body {
+  margin: 0;
+  padding: 0;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.TopBar {
+  width: 100%;
+  height: 80px;
+  background-color: #25313D;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  padding-left: 20px;
+  box-shadow: 0px 2px 5px rgba(0,0,0,0.2);
+  margin: 0;
+  position: relative;       /* Add position for z-index to work */
+  z-index: 10;              /* Higher z-index to be on top */
+}
+
+/* ✅ Wrapper for icon + title */
+.TopBarContent {
+  display: flex;
+  align-items: center;
+  gap: 12px;  /* spacing between icon and text */
+}
+
+/* ✅ Icon styling */
+.TopBarIcon {
   color: white;
+  font-size: 40px; /* adjust size if you want */
 }
 
-.App-link {
-  color: #61dafb;
+.TopBarTitle {
+  color: white;
+  font-size: 32px;
+  font-family: 'Trebuchet MS', Arial, sans-serif;
+  letter-spacing: 1px;
+  margin: 0;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+
+
+.Sidebar {
+  height: 100%;
+  width: 250px;
+  background-color: #2F4050;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  top: 60px;
+  left: 0;
+  z-index: 5;               /* Lower z-index to stay below TopBar */
+}
+
+
+.SidebarList {
+  height: auto;
+  padding: 0;
+  width: 100%;
+
+}
+
+.SidebarList .row{
+  height: 60px;
+  width: 100%;
+  list-style-type: none;
+  margin: 0%;
+  display: flex;
+  flex-direction: row;
+  color: white;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+
+}
+
+.SidebarList .row:hover {
+  cursor: pointer;
+  background-color: #293846;
+}
+
+.SidebarList #active {
+   background-color: #293846;
+} 
+.row #icon {
+  flex: 30%;
+  display: grid;
+  place-items: center;
+}
+
+.row #title {
+  flex: 70%;
 }
