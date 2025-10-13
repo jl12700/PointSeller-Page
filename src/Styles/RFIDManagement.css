@@ -1,0 +1,144 @@
+/* RFIDManagement.css */
+.rfid-container {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 40px auto;
+  max-width: 1100px;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  color: #2c3e50;
+  transition: all 0.3s ease-in-out;
+}
+
+/* make sure content is centered and not blocked by sidebar */
+.main-content {
+  margin-left: 250px; /* adjust based on sidebar width */
+  margin-top: 70px; /* adjust based on topbar height */
+  transition: margin 0.3s ease;
+}
+
+.rfid-header {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.rfid-add-btn {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s ease;
+  margin-bottom: 15px;
+}
+
+.rfid-add-btn:hover {
+  background: linear-gradient(135deg, #1d4ed8, #1e40af);
+}
+
+.rfid-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.rfid-table th {
+  background-color: #2563eb;
+  color: white;
+  text-align: left;
+  padding: 12px 14px;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.rfid-table td {
+  border-bottom: 1px solid #e2e8f0;
+  padding: 12px 14px;
+  font-size: 0.93rem;
+}
+
+.rfid-table tr:hover {
+  background-color: #eef2ff;
+  transition: 0.2s ease;
+}
+
+.rfid-status-active {
+  color: #16a34a;
+  font-weight: bold;
+}
+
+.rfid-status-disabled {
+  color: #dc2626;
+  font-weight: bold;
+}
+
+.rfid-action-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-right: 6px;
+  transition: all 0.3s ease;
+  color: #fff;
+}
+
+.rfid-action-btn.enable {
+  background-color: #16a34a;
+}
+
+.rfid-action-btn.disable {
+  background-color: #e67e22;
+}
+
+.rfid-action-btn.transact {
+  background-color: #2563eb;
+}
+
+.rfid-action-btn:hover {
+  opacity: 0.9;
+}
+
+/* notification banners */
+.rfid-notification {
+  padding: 10px 15px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  font-weight: 500;
+  color: #fff;
+  text-align: center;
+}
+
+.rfid-notification.success {
+  background-color: #16a34a;
+}
+
+.rfid-notification.error {
+  background-color: #dc2626;
+}
+
+/* responsive */
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+    margin-top: 90px;
+  }
+
+  .rfid-container {
+    padding: 20px;
+  }
+
+  .rfid-table th,
+  .rfid-table td {
+    font-size: 0.85rem;
+  }
+}

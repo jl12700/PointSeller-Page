@@ -1,0 +1,106 @@
+/* src/Styles/Logout.css */
+
+/* Dark semi-transparent background */
+.logout-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(15, 15, 15, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+/* Popup box */
+.logout-popup {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 30px 40px;
+  width: 340px;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  animation: scaleIn 0.25s ease-in-out;
+}
+
+/* Text message */
+.logout-popup p {
+  font-size: 1.1rem;
+  color: #333;
+  margin-bottom: 25px;
+  font-weight: 500;
+}
+
+/* Button container */
+.popup-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+/* Buttons shared style */
+.popup-buttons button {
+  flex: 1;
+  padding: 10px 0;
+  font-size: 0.95rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-weight: 500;
+}
+
+/* Confirm button (red) */
+.confirm-btn {
+  background-color: #e63946;
+  color: #fff;
+}
+
+.confirm-btn:hover {
+  background-color: #d62828;
+  transform: translateY(-1px);
+}
+
+/* Cancel button (gray-blue) */
+.cancel-btn {
+  background-color: #f1f3f5;
+  color: #333;
+}
+
+.cancel-btn:hover {
+  background-color: #e9ecef;
+  transform: translateY(-1px);
+}
+
+/* Smooth animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Mobile friendly */
+@media (max-width: 480px) {
+  .logout-popup {
+    width: 90%;
+    padding: 25px;
+  }
+}

@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import '../Styles/CashConversion.css';
+import Sidebar from '../Components/Sidebar';
+import TopBar from '../Components/Topbar';
+
 
 const CashConversion = () => {
   const [requests, setRequests] = useState([
@@ -61,6 +64,9 @@ const CashConversion = () => {
   };
 
   return (
+    <>
+    <TopBar />
+    <Sidebar />
     <div className="cash-page-container">
       <h1 className="page-title">Cash Conversion Request</h1>
       <table className="cash-table">
@@ -150,6 +156,7 @@ const CashConversion = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

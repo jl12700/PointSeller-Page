@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import '../Styles/TopupManagement.css';
+import Sidebar from '../Components/Sidebar';
+import TopBar from '../Components/Topbar';
 
 const TopupManagement = () => {
   const [data, setData] = useState([
@@ -61,6 +63,9 @@ const TopupManagement = () => {
   };
 
   return (
+     <>
+    <TopBar />
+    <Sidebar />
     <div className="topup-page-container">
       <h1 className="page-title">Topup Management</h1>
       <table className="topup-table">
@@ -144,6 +149,7 @@ const TopupManagement = () => {
         </div>
       )}
     </div>
+     </>
   );
 };
 
