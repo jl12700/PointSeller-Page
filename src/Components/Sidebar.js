@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import '../App.css';
 import { SidebarData } from './SidebarData';
+import HeadsetMicIcon from '@mui/icons-material/HeadsetMic';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Logout from '../Features/Logout';
 
@@ -18,13 +19,24 @@ function Sidebar() {
     }
   };
 
+  // Insert "Support Requests" below "Vendor Application" (admin path)
+  const supportItem = { title: 'Support Requests', icon: <HeadsetMicIcon />, link: '/AdminSupport' };
+  const insertIndex = SidebarData.findIndex(item => item.title === 'Vendor Application');
+  const menuItems = insertIndex !== -1
+    ? [
+        ...SidebarData.slice(0, insertIndex + 1),
+        supportItem,
+        ...SidebarData.slice(insertIndex + 1),
+      ]
+    : [...SidebarData, supportItem];
+
   return (
     <div className="Sidebar">
       <ul className="SidebarList">
-        {SidebarData.map((val, key) => (
+        {menuItems.map((val, key) => (
           <li
             key={key}
-            className="row"
+            className={`row ${val.title === 'Logout' ? 'row-logout' : ''}`}
             id={location.pathname === val.link ? "active" : ""}
             onClick={() => handleItemClick(val)}
           >

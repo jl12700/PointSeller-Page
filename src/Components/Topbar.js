@@ -8,7 +8,7 @@ function TopBar() {
     <div className="TopBar">
       <div className="TopBarContent">
         <PixIcon className="TopBarIcon" />
-        <h1 className="TopBarTitle">Paytap</h1>
+        <h1 className="TopBarTitle">PayTap</h1>
       </div>
     </div>
   );

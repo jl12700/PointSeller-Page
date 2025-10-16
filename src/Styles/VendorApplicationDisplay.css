@@ -3,10 +3,12 @@
 /* Layout - Match TransactionHistory/TopupManagement */
 .vendor-app-container {
   margin-left: 250px;
+  margin-top: 80px; /* below fixed top bar */
   padding: 30px;
   min-height: calc(100vh - 80px);
   background-color: #f5f5f5;
   overflow-x: hidden;
+  overflow-y: auto; /* only content scrolls */
 }
 
 /* Header - Consistent with other components */
