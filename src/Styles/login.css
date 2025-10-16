@@ -1,14 +1,14 @@
 /* Login Container - Full screen with gradient background */
 .login-container {
   position: fixed;
-  top: 80px;  /* ✅ Start below TopBar (TopBar height is 80px) */
+  top: 60px;  /* Start below TopBar (refined 60px height) */
   left: 0;
   width: 100vw;
-  height: calc(100vh - 80px);  /* ✅ Subtract TopBar height */
+  height: calc(100vh - 60px);  /* Subtract TopBar height */
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #1a2332 0%, #2c3e50 100%);
+  background: linear-gradient(180deg, #1b2430 0%, #121820 100%); /* fill full page with dark gradient */
   z-index: 50;
   margin: 0;
   padding: 20px;
@@ -17,12 +17,12 @@
 
 /* Login Form Card */
 .login-form {
-  background: white;
-  padding: 50px 40px;
-  border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  background: #ffffff;
+  padding: 40px 32px;
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25); /* subtle shadow */
   width: 100%;
-  max-width: 420px;
+  max-width: 400px; /* around 400px */
   animation: slideIn 0.5s ease-out;
 }
 
@@ -39,12 +39,12 @@
 
 /* Heading */
 .login-form h3 {
-  margin: 0 0 30px 0;
+  margin: 0 0 24px 0;
   text-align: center;
-  color: #2F4050;
-  font-size: 32px;
-  font-weight: 600;
-  font-family: 'Trebuchet MS', Arial, sans-serif;
+  color: #111827;
+  font-size: 26px;
+  font-weight: 800;
+  font-family: 'Inter', 'Segoe UI', Roboto, Arial, sans-serif;
 }
 
 /* Form Groups */
@@ -98,13 +98,13 @@
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-family: 'Trebuchet MS', Arial, sans-serif;
-  background: linear-gradient(135deg, #25313D 0%, #2F4050 100%);
-  box-shadow: 0 4px 15px rgba(37, 49, 61, 0.4);
+  font-family: 'Inter', 'Segoe UI', Roboto, Arial, sans-serif;
+  background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
 }
 
 .login-form .btn-primary:hover {
@@ -174,17 +174,17 @@
 }
 
 .vendor-link-btn {
-  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #22d3ee 100%);
   border: none;
   color: white;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-family: 'Trebuchet MS', Arial, sans-serif;
+  font-family: 'Inter', 'Segoe UI', Roboto, Arial, sans-serif;
   padding: 12px 30px;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 6px 16px rgba(14, 165, 233, 0.35);
   position: relative;
   overflow: hidden;
 }

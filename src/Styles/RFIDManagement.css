@@ -14,7 +14,7 @@
 /* make sure content is centered and not blocked by sidebar */
 .main-content {
   margin-left: 250px; /* align with fixed sidebar */
-  margin-top: 80px; /* align with fixed topbar */
+  margin-top: 60px; /* align with fixed 60px topbar */
   transition: margin 0.3s ease;
 }
 
@@ -130,7 +130,7 @@
 @media (max-width: 768px) {
   .main-content {
     margin-left: 0;
-    margin-top: 80px;
+    margin-top: 60px;
   }
 
   .rfid-container {

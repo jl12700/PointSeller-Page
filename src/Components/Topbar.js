@@ -1,14 +1,13 @@
 import React from 'react';
 import '../App.css';
-import PixIcon from '@mui/icons-material/Pix';
 
 
 function TopBar() {
   return (
     <div className="TopBar">
       <div className="TopBarContent">
-        <PixIcon className="TopBarIcon" />
-        <h1 className="TopBarTitle">PayTap</h1>
+        <img src={'/newicon-removebg-preview.png'} alt="PayTap" className="TopBarLogo" />
+        <h1 className="TopBarTitle" style={{ fontFamily: 'Inter, Segoe UI, Roboto, sans-serif', fontWeight: 800 }}>PayTap</h1>
       </div>
     </div>
   );
