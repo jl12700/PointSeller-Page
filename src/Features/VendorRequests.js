@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../Supabase/supabaseClient";
 import { FileText, Download, Eye, Calendar, Mail, Phone, Building, User, CheckCircle, Clock, XCircle } from "lucide-react";
+import { toast } from "react-toastify";
 import '../Styles/VendorApplicationDisplay.css';
 import Sidebar from '../Components/Sidebar';
 import TopBar from '../Components/Topbar';
@@ -10,10 +11,13 @@ function VendorApplicationsDisplay() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
   const [selectedApp, setSelectedApp] = useState(null);
+  const [updating, setUpdating] = useState(false);
 
   // Fetch all vendor applications
   const fetchApplications = async () => {
     setLoading(true);
+    console.log('🔍 Fetching applications with filter:', filter);
+    
     try {
       let query = supabase
         .from('vendor_applications')
@@ -26,37 +30,90 @@ function VendorApplicationsDisplay() {
 
       const { data, error } = await query;
 
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Fetch error:', error);
+        toast.error('Error loading applications: ' + error.message);
+        throw error;
+      }
+      
+      console.log('✅ Fetched applications:', data);
       setApplications(data || []);
     } catch (error) {
-      console.error("Error fetching applications:", error);
+      console.error("💥 Error fetching applications:", error);
+      toast.error('Failed to load applications');
     } finally {
       setLoading(false);
     }
   };
 
   // Update application status
-  const updateStatus = async (id, newStatus) => {
-    try {
-      const { error } = await supabase
-        .from('vendor_applications')
-        .update({ status: newStatus })
-        .eq('id', id);
+const updateStatus = async (id, newStatus) => {
+  if (updating) return;
 
-      if (error) throw error;
-      
-      fetchApplications();
-      if (selectedApp?.id === id) {
-        setSelectedApp({ ...selectedApp, status: newStatus });
-      }
-    } catch (error) {
-      console.error("Error updating status:", error);
+  setUpdating(true);
+  console.log(`🔄 Updating application ${id} to status: ${newStatus}`);
+
+  try {
+    const { error } = await supabase
+      .from('vendor_applications')
+      .update({ status: newStatus })
+      .eq('id', id);
+
+    if (error) throw error;
+
+    console.log('✅ Update successful.');
+
+    // ✅ Instantly update local UI even if Supabase returns []
+    setApplications(prevApps =>
+      prevApps.map(app =>
+        app.id === id ? { ...app, status: newStatus } : app
+      )
+    );
+
+    // ✅ Also update modal if open
+    setSelectedApp(prev => (prev ? { ...prev, status: newStatus } : prev));
+
+    // Toast notification
+    if (newStatus === 'approved') {
+      toast.success('✓ Application Approved!', { autoClose: 2000 });
+    } else if (newStatus === 'rejected') {
+      toast.error('✗ Application Rejected', { autoClose: 2000 });
+    } else {
+      toast.info('⏱ Set to Pending', { autoClose: 2000 });
     }
-  };
+
+    // Optional: Close modal after short delay
+    setTimeout(() => setSelectedApp(null), 500);
+
+    // Optional: Refresh data after delay to stay in sync
+    setTimeout(() => fetchApplications(), 700);
+
+  } catch (error) {
+    console.error("💥 Error updating status:", error);
+    toast.error('Failed to update status');
+  } finally {
+    setUpdating(false);
+  }
+};
+
+
+
 
   useEffect(() => {
     fetchApplications();
   }, [filter]);
+
+  // Close on Escape key when modal is open
+  useEffect(() => {
+    if (!selectedApp) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setSelectedApp(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedApp]);
 
   const getStatusClass = (status) => {
     switch (status) {
@@ -138,7 +195,10 @@ function VendorApplicationsDisplay() {
               {['all', 'pending', 'approved', 'rejected'].map((status) => (
                 <button
                   key={status}
-                  onClick={() => setFilter(status)}
+                  onClick={() => {
+                    console.log('Filter changed to:', status);
+                    setFilter(status);
+                  }}
                   className={`filter-btn ${filter === status ? 'filter-active' : ''}`}
                 >
                   {status.charAt(0).toUpperCase() + status.slice(1)}
@@ -163,87 +223,84 @@ function VendorApplicationsDisplay() {
           </div>
         ) : (
           <div className="applications-grid">
-            {applications.map((app) => (
-              <div
-                key={app.id}
-                className="application-card"
-                onClick={() => setSelectedApp(app)}
-              >
-                {/* Card Header */}
-                <div className="card-header">
-                  <div className="card-header-content">
-                    <h3 className="card-business-name">{app.business_name}</h3>
-                    <span className={`status-badge ${getStatusClass(app.status)}`}>
-                      {getStatusIcon(app.status)}
-                      {app.status.toUpperCase()}
-                    </span>
-                  </div>
-                  <p className="card-location">{app.stall_location}</p>
-                </div>
-
-                {/* Card Body */}
-                <div className="card-body">
-                  <div className="card-info">
-                    <User className="info-icon" />
-                    <span className="info-text">{app.full_name}</span>
-                  </div>
-                  
-                  <div className="card-info">
-                    <Mail className="info-icon" />
-                    <span className="info-text">{app.email}</span>
-                  </div>
-                  
-                  <div className="card-info">
-                    <Phone className="info-icon" />
-                    <span className="info-text">{app.phone_number}</span>
-                  </div>
-                  
-                  <div className="card-info">
-                    <Calendar className="info-icon" />
-                    <span className="info-text">
+            <table className="vendor-applications-table">
+              <thead>
+                <tr>
+                  <th>Business Name</th>
+                  <th>Owner</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Location</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {applications.map((app) => (
+                  <tr key={app.id}>
+                    <td>{app.business_name}</td>
+                    <td>{app.full_name}</td>
+                    <td>{app.email}</td>
+                    <td>{app.phone_number}</td>
+                    <td>{app.stall_location}</td>
+                    <td>
+                      <span className={`status-badge ${getStatusClass(app.status)}`}>
+                        {app.status.toUpperCase()}
+                      </span>
+                    </td>
+                    <td>
                       {new Date(app.created_at).toLocaleDateString('en-US', { 
                         year: 'numeric', 
                         month: 'short', 
                         day: 'numeric' 
                       })}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Card Footer */}
-                <div className="card-footer">
-                  <button className="btn-view-full">
-                    View Full Application
-                  </button>
-                </div>
-              </div>
-            ))}
+                    </td>
+                    <td>
+                      <button
+                        className="view-details-btn"
+                        onClick={() => setSelectedApp(app)}
+                        title="View Details"
+                      >
+                        View
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </div>
 
       {/* Modal for Full Application View */}
       {selectedApp && (
-        <div className="modal-overlay" onClick={() => setSelectedApp(null)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <div 
+          className="vendor-modal-overlay" 
+          onClick={() => setSelectedApp(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="vendor-modal-title"
+        >
+          <div className="vendor-modal-content" onClick={(e) => e.stopPropagation()}>
             {/* Modal Header */}
-            <div className="modal-header">
-              <div className="modal-header-content">
-                <div>
-                  <h2 className="modal-title">{selectedApp.business_name}</h2>
-                  <p className="modal-subtitle">{selectedApp.stall_location}</p>
-                </div>
-                <button
-                  onClick={() => setSelectedApp(null)}
-                  className="modal-close-btn"
-                >
-                  <XCircle className="close-icon" />
-                </button>
+            <div className="vendor-modal-header">
+              <div>
+                <h2 id="vendor-modal-title" className="vendor-modal-title">{selectedApp.business_name}</h2>
+                <p className="vendor-modal-subtitle">{selectedApp.stall_location}</p>
               </div>
+              <button
+                onClick={() => setSelectedApp(null)}
+                className="vendor-modal-close-btn"
+                disabled={updating}
+                aria-label="Close"
+              >
+                ×
+              </button>
             </div>
 
             {/* Modal Content */}
-            <div className="modal-body">
+            <div className="vendor-modal-body">
               {/* Owner Information */}
               <div className="section">
                 <h3 className="section-title">
@@ -303,23 +360,26 @@ function VendorApplicationsDisplay() {
                   <button
                     onClick={() => updateStatus(selectedApp.id, 'approved')}
                     className="action-btn btn-approve"
+                    disabled={updating || selectedApp.status === 'approved'}
                   >
                     <CheckCircle className="action-icon" />
-                    Approve
+                    {updating ? 'Updating...' : selectedApp.status === 'approved' ? 'Already Approved' : 'Approve'}
                   </button>
                   <button
                     onClick={() => updateStatus(selectedApp.id, 'pending')}
                     className="action-btn btn-pending"
+                    disabled={updating || selectedApp.status === 'pending'}
                   >
                     <Clock className="action-icon" />
-                    Pending
+                    {updating ? 'Updating...' : selectedApp.status === 'pending' ? 'Already Pending' : 'Set to Pending'}
                   </button>
                   <button
                     onClick={() => updateStatus(selectedApp.id, 'rejected')}
                     className="action-btn btn-reject"
+                    disabled={updating || selectedApp.status === 'rejected'}
                   >
                     <XCircle className="action-icon" />
-                    Reject
+                    {updating ? 'Updating...' : selectedApp.status === 'rejected' ? 'Already Rejected' : 'Reject'}
                   </button>
                 </div>
               </div>

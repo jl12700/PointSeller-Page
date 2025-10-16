@@ -45,53 +45,92 @@ body {
 
 
 .Sidebar {
-  height: 100%;
+  height: calc(100vh - 80px);
   width: 250px;
-background: linear-gradient(135deg, #1a2332 0%, #2c3e50 100%);
+  background: linear-gradient(135deg, #1a2332 0%, #2c3e50 100%);
   margin: 0;
   padding: 0;
-  position: absolute;
-  top: 60px;
+  position: fixed;
+  top: 80px;
   left: 0;
-  z-index: 5;               /* Lower z-index to stay below TopBar */
+  z-index: 100;
+  overflow-y: auto;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
 }
 
 
 .SidebarList {
   height: auto;
-  padding: 0;
+  padding: 8px 0;
   width: 100%;
-
+  margin: 0;
 }
 
 .SidebarList .row{
-  height: 60px;
+  height: 48px;
   width: 100%;
   list-style-type: none;
-  margin: 0%;
+  margin: 2px 8px;
   display: flex;
   flex-direction: row;
-  color: white;
-  justify-content: center;
+  color: #e2e8f0;
+  justify-content: flex-start;
   align-items: center;
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .SidebarList .row:hover {
-  cursor: pointer;
-  background-color: #293846;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
 }
 
 .SidebarList #active {
-   background-color: #293846;
+   background-color: #4CAF50;
+   color: white;
+   font-weight: 600;
 } 
 .row #icon {
-  flex: 30%;
-  display: grid;
-  place-items: center;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
 }
 
 .row #title {
-  flex: 70%;
+  flex: 1;
+  padding-left: 4px;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .Sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+  
+  .Sidebar.open {
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .Sidebar {
+    width: 280px;
+    z-index: 200;
+  }
+  
+  .SidebarList .row {
+    height: 52px;
+    font-size: 15px;
+  }
+  
+  .row #icon {
+    font-size: 20px;
+  }
 }

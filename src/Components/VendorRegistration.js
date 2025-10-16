@@ -5,8 +5,6 @@ import '../Styles/VendorRegistration.css';
 import TopBar from './Topbar';
 import { supabase } from "../Supabase/supabaseClient";
 
-
-
 function VendorRegistration() {
   const navigate = useNavigate();
   
@@ -27,7 +25,9 @@ function VendorRegistration() {
   });
 
   const [uploadedURLs, setUploadedURLs] = useState({});
+  const [previewURLs, setPreviewURLs] = useState({});
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -40,30 +40,51 @@ function VendorRegistration() {
   const handleFileChange = (e) => {
     const { name, files: selectedFiles } = e.target;
     if (selectedFiles && selectedFiles[0]) {
+      const file = selectedFiles[0];
+      
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error(`${file.name} is too large. Max size is 5MB`);
+        return;
+      }
+
       setFiles(prev => ({
         ...prev,
-        [name]: selectedFiles[0]
+        [name]: file
       }));
+
+      if (file.type.startsWith('image/')) {
+        const previewUrl = URL.createObjectURL(file);
+        setPreviewURLs(prev => ({
+          ...prev,
+          [name]: previewUrl
+        }));
+      }
     }
   };
 
   const uploadToSupabase = async (file, folderName) => {
     try {
       const fileName = `${folderName}/${Date.now()}_${file.name}`;
+      console.log(`📤 Uploading ${file.name} as ${fileName}`);
+      
       const { data, error } = await supabase.storage
-        .from("image") // ✅ bucket name
+        .from("image")
         .upload(fileName, file);
 
-      if (error) throw error;
+      if (error) {
+        console.error("❌ Supabase upload error:", error);
+        throw error;
+      }
 
       const { data: publicUrlData } = supabase.storage
         .from("image")
         .getPublicUrl(fileName);
 
+      console.log(`✅ Uploaded successfully: ${publicUrlData.publicUrl}`);
       return publicUrlData.publicUrl;
     } catch (error) {
-      console.error("Upload error:", error.message);
-      toast.error(`Failed to upload ${file.name}`);
+      console.error("💥 Upload error:", error.message);
+      toast.error(`Failed to upload ${file.name}: ${error.message}`);
       return null;
     }
   };
@@ -71,32 +92,93 @@ function VendorRegistration() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    console.log("🚀 Form submission started");
+    console.log("📋 Form data:", formData);
+    
     if (!files.accreditationCert || !files.menuList || !files.dtiSec || !files.mayorPermit) {
       toast.error("⚠️ Please upload all required documents", { position: "top-center" });
       return;
     }
 
+    setIsSubmitting(true);
     toast.info("Uploading files, please wait...");
 
-    const uploaded = {};
-    for (const key in files) {
-      if (files[key]) {
-        const url = await uploadToSupabase(files[key], formData.businessName || "vendors");
-        if (url) uploaded[key] = url;
+    try {
+      // Upload all files
+      const uploaded = {};
+      let uploadFailed = false;
+
+      console.log("📁 Starting file uploads...");
+      for (const key in files) {
+        if (files[key]) {
+          const url = await uploadToSupabase(files[key], formData.businessName || "vendors");
+          if (url) {
+            uploaded[key] = url;
+          } else {
+            uploadFailed = true;
+          }
+        }
       }
+
+      if (uploadFailed || Object.keys(uploaded).length !== 4) {
+        toast.error("❌ Some files failed to upload. Please try again.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      setUploadedURLs(uploaded);
+      console.log("✅ All files uploaded successfully:", uploaded);
+
+      // Prepare data for database
+      const dataToInsert = {
+        full_name: formData.fullName,
+        email: formData.email,
+        phone_number: formData.phoneNumber,
+        business_name: formData.businessName,
+        stall_location: formData.stallLocation,
+        authorized_seller_name: formData.authorizedSellerName,
+        accreditation_cert_url: uploaded.accreditationCert,
+        menu_list_url: uploaded.menuList,
+        dti_sec_url: uploaded.dtiSec,
+        mayor_permit_url: uploaded.mayorPermit,
+        status: 'pending',
+        created_at: new Date().toISOString()
+      };
+
+      console.log("💾 Inserting into database:", dataToInsert);
+
+      const { data: vendorData, error: dbError } = await supabase
+        .from('vendor_applications')
+        .insert([dataToInsert])
+        .select();
+
+      console.log("📊 Database response - Data:", vendorData);
+      console.log("📊 Database response - Error:", dbError);
+
+      if (dbError) {
+        console.error("❌ Database error:", dbError);
+        alert(`Database Error: ${JSON.stringify(dbError, null, 2)}`);
+        toast.error("Files uploaded but failed to save application. Please contact support.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      console.log("✅ Application saved successfully!");
+      toast.success("✅ Application submitted successfully!");
+      setShowSuccessModal(true);
+
+    } catch (error) {
+      console.error("💥 Submission error:", error);
+      alert(`Submission Error: ${error.message}`);
+      toast.error("An error occurred. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
-
-    setUploadedURLs(uploaded);
-
-    console.log("Form Data:", formData);
-    console.log("Uploaded URLs:", uploaded);
-
-    toast.success("✅ All files uploaded successfully!");
-    setShowSuccessModal(true);
   };
 
   const handleCloseModal = () => {
     setShowSuccessModal(false);
+    Object.values(previewURLs).forEach(url => URL.revokeObjectURL(url));
     navigate("/login");
   };
 
@@ -114,7 +196,6 @@ function VendorRegistration() {
           </div>
 
           <form onSubmit={handleSubmit} className="vendor-reg-form">
-            {/* Personal Information Section */}
             <div className="form-section">
               <h3 className="section-title">Owner Information</h3>
               <div className="form-group">
@@ -127,6 +208,7 @@ function VendorRegistration() {
                   value={formData.fullName}
                   onChange={handleInputChange}
                   required
+                  disabled={isSubmitting}
                 />
               </div>
 
@@ -141,6 +223,7 @@ function VendorRegistration() {
                     value={formData.email}
                     onChange={handleInputChange}
                     required
+                    disabled={isSubmitting}
                   />
                 </div>
 
@@ -154,12 +237,12 @@ function VendorRegistration() {
                     value={formData.phoneNumber}
                     onChange={handleInputChange}
                     required
+                    disabled={isSubmitting}
                   />
                 </div>
               </div>
             </div>
 
-            {/* Business Information Section */}
             <div className="form-section">
               <h3 className="section-title">Business Information</h3>
               <div className="form-row">
@@ -173,6 +256,7 @@ function VendorRegistration() {
                     value={formData.businessName}
                     onChange={handleInputChange}
                     required
+                    disabled={isSubmitting}
                   />
                 </div>
 
@@ -186,6 +270,7 @@ function VendorRegistration() {
                     value={formData.stallLocation}
                     onChange={handleInputChange}
                     required
+                    disabled={isSubmitting}
                   />
                 </div>
               </div>
@@ -200,11 +285,11 @@ function VendorRegistration() {
                   value={formData.authorizedSellerName}
                   onChange={handleInputChange}
                   required
+                  disabled={isSubmitting}
                 />
               </div>
             </div>
 
-            {/* Documents Section */}
             <div className="form-section">
               <h3 className="section-title">Required Documents</h3>
               <div className="file-upload-grid">
@@ -224,16 +309,20 @@ function VendorRegistration() {
                         accept=".pdf,.jpg,.jpeg,.png"
                         onChange={handleFileChange}
                         required
+                        disabled={isSubmitting}
                       />
                       <span className="file-btn">
                         {files[key] ? "✓ " + files[key].name : "Choose File"}
                       </span>
                     </label>
 
-                    {/* ✅ Preview uploaded image */}
-                    {uploadedURLs[key] && uploadedURLs[key].match(/\.(jpeg|jpg|png)$/i) && (
+                    {previewURLs[key] && (
                       <div className="image-preview">
-                        <img src={uploadedURLs[key]} alt={key} style={{ width: "120px", marginTop: "10px", borderRadius: "8px" }} />
+                        <img 
+                          src={previewURLs[key]} 
+                          alt={`${key} preview`} 
+                          style={{ width: "120px", marginTop: "10px", borderRadius: "8px", border: "1px solid #ddd" }} 
+                        />
                       </div>
                     )}
                   </div>
@@ -243,14 +332,26 @@ function VendorRegistration() {
             </div>
 
             <div className="form-actions">
-              <button type="submit" className="submit-btn">Submit Application</button>
-              <button type="button" className="cancel-btn" onClick={() => navigate("/login")}>Cancel</button>
+              <button 
+                type="submit" 
+                className="submit-btn"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Submitting..." : "Submit Application"}
+              </button>
+              <button 
+                type="button" 
+                className="cancel-btn" 
+                onClick={() => navigate("/login")}
+                disabled={isSubmitting}
+              >
+                Cancel
+              </button>
             </div>
           </form>
         </div>
       </div>
 
-      {/* ✅ Success Modal */}
       {showSuccessModal && (
         <div className="success-modal-overlay">
           <div className="success-modal">

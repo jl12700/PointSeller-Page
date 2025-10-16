@@ -11,39 +11,30 @@ export const SidebarData =  [
         title: "Cash Conversion",
         icon: <AttachMoneyIcon />,
         link:  "/CashConvert"
-
     },
-     {
+    {
         title: "Topup Management",
         icon: <AccountBalanceIcon />,
-        link:  "/Topup"
-
+        link:  "/AdminTopup"
     },
-     {
+    {
         title: "RFID Card Management",
         icon: <AddCardIcon />,
         link:  "/CardManage"
-
     },
-     {
+    {
         title: "Transaction History",
         icon: <ReceiptLongIcon />,
         link:  "/TransHistory"
-
     },
-      {
+    {
         title: "Vendor Application",
         icon: <HowToRegIcon />,
         link:  "/Register"
-
     },
-     {
+    {
         title: "Logout",
         icon: <LogoutIcon />,
         link:  "/Logout"
-
     },
-    
-
 ]
-
