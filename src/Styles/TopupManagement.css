@@ -61,6 +61,7 @@
   padding: 12px 15px;
   text-align: left;
   border-bottom: 1px solid #ddd;
+  vertical-align: middle;
 }
 
 .topup-table thead {
@@ -80,6 +81,10 @@
   font-size: 16px;
   cursor: pointer;
   margin-right: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
 }
 
 .approve-btn {
@@ -98,6 +103,17 @@
 
 .reject-btn:hover {
   background-color: #c82333;
+}
+
+/* Action column alignment - prevent wrapping/stacking */
+.action-cell {
+  white-space: nowrap;
+}
+
+.action-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /* ===== MODAL STYLES (namespaced to avoid conflicts) ===== */
@@ -393,3 +409,34 @@
 .success-close:hover { opacity: 1; }
 
 @keyframes slideInRight { from { opacity: 0 } to { opacity: 1 } }
+
+/* Stronger status badges with clear contrast (scoped to Topup table) */
+.topup-table .status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  text-transform: uppercase;
+  border: none; /* override any generic borders */
+  line-height: 1;
+}
+
+.topup-table .status-approved {
+  background-color: #16a34a; /* emerald-600 */
+  color: #ffffff;
+  box-shadow: inset 0 0 0 1px #15803d; /* subtle ring for definition */
+}
+
+.topup-table .status-rejected {
+  background-color: #dc2626; /* red-600 */
+  color: #ffffff;
+  box-shadow: inset 0 0 0 1px #b91c1c;
+}
+
+.topup-table .status-pending {
+  background-color: #f59e0b; /* amber-500 */
+  color: #1f2937; /* gray-800 for contrast */
+  box-shadow: inset 0 0 0 1px #d97706;
+}

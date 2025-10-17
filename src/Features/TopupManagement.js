@@ -279,8 +279,20 @@ const TopupManagement = () => {
                       'N/A'
                     )}
                   </td>
-                  <td>{row.status}</td>
                   <td>
+                    <span
+                      className={`status-badge ${
+                        row.status === 'Approved'
+                          ? 'status-approved'
+                          : row.status === 'Rejected'
+                          ? 'status-rejected'
+                          : 'status-pending'
+                      }`}
+                    >
+                      {row.status}
+                    </span>
+                  </td>
+                  <td className="action-cell">
                     <button
                       className="approve-btn"
                       onClick={() => handleActionClick(row, 'approve')}

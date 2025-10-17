@@ -10,6 +10,8 @@ import AdminLogin from './Components/adminlogin';
 import PointsTopup from './StudentAccess/PointsTopUp';
 import Expense from './StudentAccess/ExpenseTracking';
 import TransactionHistory from './Features/TransactionHistory';
+import SupportRequest from './StudentAccess/SupportRequest';
+import AdminSupportDashboard from './Features/AdminSupportDashboard';
 
 function AppLayout() {
   const location = useLocation();
@@ -21,6 +23,8 @@ function AppLayout() {
         <Route path="/login" element={<Login />} />  
         <Route path="/Expense" element={<Expense />} />  
         <Route path="/Topup" element={<PointsTopup />} />  
+        <Route path="/AdminSupport" element={<AdminSupportDashboard />} />  
+        <Route path="/Support" element={<SupportRequest />} />  
         <Route path="/CashConvert" element={<CashConversion />} />
         <Route path="/TransHistory" element={<TransactionHistory />} />
         <Route path="/vendor-registration" element={<VendorRegistration />} /> 

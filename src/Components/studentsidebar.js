@@ -1,10 +1,8 @@
-
 import React, { useState } from 'react';
 import '../App.css';
 import { StudentSidebarData } from './studentsidedata';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Logout from '../Features/Logout';
-import HeadsetMicIcon from '@mui/icons-material/HeadsetMic';
 
 function StudentSidebar() {
   const navigate = useNavigate();
@@ -19,21 +17,10 @@ function StudentSidebar() {
     }
   };
 
-  // Insert student Support Request link below existing items
-  const supportItem = { title: 'Support Requests', icon: <HeadsetMicIcon />, link: '/Support' };
-  const insertIndex = StudentSidebarData.findIndex(item => item.title === 'Support Request')
-  const menuItems = insertIndex !== -1
-    ? [
-        ...StudentSidebarData.slice(0, insertIndex + 1),
-        supportItem,
-        ...StudentSidebarData.slice(insertIndex + 1),
-      ]
-    : [...StudentSidebarData, supportItem];
-
   return (
     <div className="Sidebar">
       <ul className="SidebarList">
-        {menuItems.map((val, key) => (
+        {StudentSidebarData.map((val, key) => (
           <li
             key={key}
             className={`row ${val.title === 'Logout' ? 'row-logout' : ''}`}

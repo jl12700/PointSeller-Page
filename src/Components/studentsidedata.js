@@ -5,7 +5,7 @@ import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ContactSupportIcon from '@mui/icons-material/ContactSupport';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
-
+import HeadsetMicIcon from '@mui/icons-material/HeadsetMic';
 export const StudentSidebarData =  [
     {
         title: "Points Topup",
@@ -27,7 +27,7 @@ export const StudentSidebarData =  [
     },
      {
         title: "Support Request",
-        icon: <ContactSupportIcon />,
+        icon: <HeadsetMicIcon />,
         link:  "/Support"
 
     },

@@ -70,7 +70,7 @@ function Login() {
       <TopBar />
       <div className="login-container">
         <form onSubmit={handleSubmit} className="login-form">
-          <h3>Login</h3>
+          <h3>Welcome</h3>
 
           {error && (
             <div className="error-message">
