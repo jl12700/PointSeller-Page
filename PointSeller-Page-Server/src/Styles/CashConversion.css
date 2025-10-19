@@ -1,0 +1,155 @@
+.cash-page-container {
+  margin-left: 260px; /* Leaves space for sidebar */
+  padding: 20px;
+  font-family: 'Trebuchet MS', Arial, sans-serif;
+}
+
+.page-title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #25313D;
+}
+
+.cash-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #ffffff;
+  box-shadow: 0px 2px 5px rgba(0,0,0,0.2);
+}
+
+.cash-table th,
+.cash-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.cash-table th {
+  background-color: #25313D;
+  color: white;
+}
+
+.cash-table tr:hover {
+  background-color: #f2f2f2;
+}
+
+.action-btn {
+  padding: 6px 12px;
+  background-color: #2F4050;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.action-btn:hover {
+  background-color: #293846;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.check-btn,
+.cross-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.check-btn {
+  background-color: #28a745; /* Green */
+  color: white;
+}
+
+.cross-btn {
+  background-color: #d9534f; /* Red */
+  color: white;
+}
+
+.check-btn:hover {
+  background-color: #218838;
+}
+
+.cross-btn:hover {
+  background-color: #c82333;
+}
+
+/* ===== MODAL STYLES (NO OVERLAP) ===== */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  width: 420px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.modal-header h2 {
+  margin: 0 0 15px 0;
+  font-size: 20px;
+}
+
+.modal-body p {
+  margin: 8px 0;
+}
+
+.modal-textarea {
+  width: 100%;
+  height: 80px;
+  padding: 8px;
+  margin-top: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: none;
+}
+
+.modal-footer {
+  margin-top: 15px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.modal-confirm-btn {
+  padding: 8px 14px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.modal-close-btn {
+  padding: 8px 14px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.modal-confirm-btn:hover {
+  background-color: #218838;
+}
+
+.modal-close-btn:hover {
+  background-color: #5a6268;
+}

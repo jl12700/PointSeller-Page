@@ -1,0 +1,188 @@
+.App {
+  height: 100vh;
+  width: 100vw;
+  background-color: white
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+html { overflow-x: hidden; }
+.TopBar {
+  width: 100%;
+  height: 60px; /* refined, compact height */
+  background-color: #1e2735; /* slightly lighter than sidebar */
+  display: flex;
+  align-items: center; /* center logo/text vertically */
+  padding-left: 20px;
+  padding-right: 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* subtle separation */
+  margin: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+/* ✅ Wrapper for icon + title */
+.TopBarContent {
+  display: flex;
+  align-items: center;
+  gap: 12px;  /* spacing between icon and text */
+}
+
+/* ✅ Icon styling */
+.TopBarIcon {
+  color: #a7f3d0;
+  font-size: 36px;
+}
+
+.TopBarLogo {
+  width: 28px; /* sized for 60px bar */
+  height: 28px;
+  object-fit: contain;
+  display: block;
+}
+
+.TopBarTitle {
+  font-size: 28px;
+  font-family: 'Trebuchet MS', Arial, sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  margin: 0;
+  background: linear-gradient(90deg, #ffffff, #a7f3d0, #ffffff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+
+
+.Sidebar {
+  height: calc(100vh - 60px);
+  width: 250px;
+  background: linear-gradient(180deg, #1b2430 0%, #121820 100%);
+  margin: 0;
+  padding: 8px 8px;
+  position: fixed;
+  top: 60px;
+  left: 0;
+  z-index: 900;
+  overflow-y: auto;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.12);
+}
+
+
+.SidebarList {
+  height: auto;
+  padding: 4px;
+  width: 100%;
+  margin: 0;
+}
+
+.SidebarList .row{
+  position: relative;
+  height: 44px;
+  width: calc(100% - 8px);
+  list-style-type: none;
+  margin: 4px;
+  display: flex;
+  flex-direction: row;
+  color: #ffffff; /* simple, readable */
+  justify-content: flex-start;
+  align-items: center;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 999px;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+  cursor: pointer;
+  padding: 0 10px;
+}
+
+.SidebarList .row:hover {
+  background-color: rgba(255, 255, 255, 0.05); /* light feedback */
+  color: #ffffff;
+}
+
+/* Logout row refinement */
+.SidebarList .row-logout {
+  color: #fca5a5;
+}
+.SidebarList .row-logout:hover {
+  background-color: rgba(239, 68, 68, 0.12);
+  color: #fecaca;
+}
+
+.SidebarList #active {
+  background-color: rgba(0, 255, 150, 0.1); /* translucent brand tint */
+  color: #ffffff;
+}
+.SidebarList #active::before {
+  content: "";
+  position: absolute;
+  left: -4px;
+  top: 6px;
+  bottom: 6px;
+  width: 4px; /* green accent bar */
+  border-radius: 2px;
+  background: linear-gradient(180deg, #34d399, #22c55e);
+}
+.row #icon {
+  width: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.row #title {
+  flex: 1;
+  padding-left: 4px;
+}
+
+/* Main content area */
+.main-content {
+  position: relative;
+  margin-top: 60px; /* align below refined top bar */
+  margin-left: 250px;
+  padding: 24px;
+  min-height: calc(100vh - 60px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: #f5f7fb;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .Sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+  
+  .Sidebar.open {
+    transform: translateX(0);
+  }
+  .main-content { margin-left: 0; }
+}
+
+@media (max-width: 768px) {
+  .Sidebar {
+    width: 280px;
+    z-index: 200;
+  }
+  
+  .SidebarList .row {
+    height: 48px;
+    font-size: 15px;
+  }
+  
+  .row #icon {
+    font-size: 20px;
+  }
+  .TopBarTitle { font-size: 24px; }
+  .main-content { padding: 16px; }
+}
