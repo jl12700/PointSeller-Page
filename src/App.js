@@ -12,7 +12,8 @@ import Expense from './StudentAccess/ExpenseTracking';
 import TransactionHistory from './Features/TransactionHistory';
 import SupportRequest from './StudentAccess/SupportRequest';
 import AdminSupportDashboard from './Features/AdminSupportDashboard';
-
+import PointsBalance from './StudentAccess/PointsBalance';
+import EditProfile from './StudentAccess/EditProfile';
 function AppLayout() {
   const location = useLocation();
 
@@ -23,6 +24,8 @@ function AppLayout() {
         <Route path="/login" element={<Login />} />  
         <Route path="/Expense" element={<Expense />} />  
         <Route path="/Topup" element={<PointsTopup />} />  
+        <Route path="/Balance" element={<PointsBalance />} />
+        <Route path="/Profile" element={<EditProfile />} />  
         <Route path="/AdminSupport" element={<AdminSupportDashboard />} />  
         <Route path="/Support" element={<SupportRequest />} />  
         <Route path="/CashConvert" element={<CashConversion />} />
