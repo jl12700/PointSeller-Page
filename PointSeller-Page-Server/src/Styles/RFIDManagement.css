@@ -1,0 +1,807 @@
+/* RFID Management Professional Styling */
+
+.rfid-management {
+  padding: 28px;
+  background: #f8f9fb;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  margin-top: 60px;
+  margin-left: 250px;
+  min-height: calc(100vh - 60px);
+}
+
+.rfid-management h2 {
+  margin-bottom: 28px;
+  color: #1a202c;
+  font-size: 28px;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: -0.5px;
+}
+
+/* ===== TAB NAVIGATION ===== */
+.main-tab-container {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 28px;
+  background: white;
+  padding: 8px;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  flex-wrap: wrap;
+}
+
+.main-tab-btn {
+  flex: 1;
+  min-width: 140px;
+  padding: 12px 16px;
+  background: #f0f2f5;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #4a5568;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.main-tab-btn:hover {
+  background: #e2e8f0;
+  transform: translateY(-1px);
+}
+
+.main-tab-btn.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: #667eea;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25);
+}
+
+.main-tab-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ===== SUB TAB NAVIGATION ===== */
+.sub-tab-container {
+  display: flex;
+  gap: 0;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.sub-tab-btn {
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-weight: 500;
+  color: #718096;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.sub-tab-btn:hover {
+  color: #4a5568;
+}
+
+.sub-tab-btn.active {
+  color: #667eea;
+  border-bottom-color: #667eea;
+}
+
+/* ===== BUTTONS - UNIFIED STYLING ===== */
+.btn-primary,
+.btn-secondary,
+.btn-success,
+.btn-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  height: 40px;
+  min-width: 100px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+}
+
+.btn-primary:hover:not(:disabled) {
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.35);
+  transform: translateY(-2px);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  background: #e2e8f0;
+  color: #2d3748;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #cbd5e0;
+  transform: translateY(-2px);
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(72, 187, 120, 0.2);
+}
+
+.btn-success:hover:not(:disabled) {
+  box-shadow: 0 4px 16px rgba(72, 187, 120, 0.35);
+  transform: translateY(-2px);
+}
+
+.btn-success:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Toggle buttons */
+.btn-toggle {
+  padding: 8px 14px;
+  min-width: 90px;
+  height: 36px;
+  font-size: 12px;
+}
+
+.btn-toggle.deactivate {
+  background: #fed7d7;
+  color: #742a2a;
+}
+
+.btn-toggle.deactivate:hover {
+  background: #fc8181;
+  color: white;
+  transform: translateY(-1px);
+}
+
+.btn-toggle.activate {
+  background: #c6f6d5;
+  color: #22543d;
+}
+
+.btn-toggle.activate:hover {
+  background: #9ae6b4;
+  color: white;
+  transform: translateY(-1px);
+}
+
+/* Disabled state */
+.btn-primary:disabled,
+.btn-secondary:disabled,
+.btn-success:disabled,
+.btn-toggle:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ===== BUTTON GROUPS ===== */
+.search-section {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.search-section .input-field {
+  flex: 1;
+  min-width: 200px;
+}
+
+.topup-actions,
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.topup-actions button,
+.form-actions button {
+  flex: 1;
+  min-width: 140px;
+}
+
+/* ===== FORMS & INPUTS ===== */
+.input-field {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #cbd5e0;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  background: white;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.input-field:disabled {
+  background: #f7fafc;
+  color: #a0aec0;
+  cursor: not-allowed;
+}
+
+small {
+  display: block;
+  margin-top: 6px;
+  color: #a0aec0;
+  font-size: 12px;
+}
+
+/* ===== REGISTER FORM ===== */
+.register-card {
+  background: white;
+  padding: 32px;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.register-card h3 {
+  margin: 0 0 8px 0;
+  color: #1a202c;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.register-subtitle {
+  margin: 0 0 28px 0;
+  color: #718096;
+  font-size: 14px;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 14px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.password-input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-group input {
+  flex: 1;
+  padding-right: 40px;
+}
+
+.toggle-password-btn {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.toggle-password-btn:hover {
+  opacity: 1;
+}
+
+/* ===== USER & DETAILS CARDS ===== */
+.user-card {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  border-left: 4px solid #48bb78;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  margin-top: 24px;
+}
+
+.user-card h3 {
+  margin: 0 0 18px 0;
+  color: #1a202c;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-row.balance-row {
+  background: #f0fff4;
+  padding: 14px 16px;
+  border-radius: 8px;
+  margin-top: 8px;
+  border-bottom: 1px solid #c6f6d5;
+}
+
+.label {
+  font-weight: 600;
+  color: #4a5568;
+  font-size: 14px;
+}
+
+.value {
+  color: #1a202c;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: right;
+}
+
+.value.rfid {
+  font-family: 'Courier New', monospace;
+  background: #f7fafc;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+.balance-value {
+  color: #38a169;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+/* ===== TOPUP SECTION ===== */
+.topup-section {
+  margin-top: 24px;
+}
+
+.topup-card {
+  background: white;
+  padding: 28px;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.current-balance {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 24px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 28px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.balance-number {
+  font-size: 36px;
+  font-weight: 700;
+  margin: 0 10px;
+}
+
+.topup-form {
+  margin-bottom: 24px;
+}
+
+.topup-form label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 14px;
+}
+
+.amount-input-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.amount-input {
+  flex: 1;
+}
+
+.unit {
+  font-weight: 600;
+  color: #4a5568;
+  font-size: 14px;
+  white-space: nowrap;
+  min-width: 40px;
+}
+
+.topup-preview {
+  background: #f0fff4;
+  border: 1px solid #c6f6d5;
+  color: #22543d;
+  padding: 14px 16px;
+  border-radius: 8px;
+  margin-top: 14px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.topup-preview p {
+  margin: 0;
+}
+
+/* ===== CARD MANAGEMENT TABLE ===== */
+.manage-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  gap: 16px;
+}
+
+.manage-header h3 {
+  margin: 0;
+  color: #1a202c;
+  font-size: 18px;
+  font-weight: 700;
+  flex: 1;
+}
+
+.manage-header .btn-secondary {
+  flex: 0 1 auto;
+}
+
+.cards-table-container {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  overflow-x: auto;
+}
+
+.cards-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.cards-table thead {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.cards-table th {
+  padding: 16px 12px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.cards-table td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #e2e8f0;
+  color: #2d3748;
+}
+
+.cards-table tbody tr:hover {
+  background: #f7fafc;
+}
+
+.card-row.status-inactive {
+  opacity: 0.7;
+}
+
+.rfid-uid {
+  font-family: 'Courier New', monospace;
+  background: #f7fafc;
+  padding: 8px 10px;
+  border-radius: 4px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  font-size: 12px;
+}
+
+.balance {
+  font-weight: 600;
+  color: #38a169;
+}
+
+.date {
+  color: #a0aec0;
+  font-size: 12px;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge.status-active {
+  background: #c6f6d5;
+  color: #22543d;
+}
+
+.status-badge.status-inactive {
+  background: #fed7d7;
+  color: #742a2a;
+}
+
+.actions {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+}
+
+.actions .btn-toggle {
+  margin: 0;
+}
+
+/* ===== EMPTY STATE ===== */
+.empty-state {
+  background: white;
+  padding: 80px 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.empty-state p {
+  margin: 0 0 24px 0;
+  color: #718096;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.empty-state .btn-primary {
+  max-width: 300px;
+}
+
+/* ===== AUTH REQUIRED ===== */
+.auth-required {
+  padding: 24px;
+  text-align: center;
+  background: #fef5e7;
+  border: 1px solid #f9e79f;
+  border-radius: 8px;
+  color: #7d6608;
+  font-weight: 500;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .rfid-management {
+    margin-left: 0;
+  }
+
+  .register-card {
+    padding: 24px;
+  }
+
+  .btn-primary,
+  .btn-secondary,
+  .btn-success {
+    min-width: 90px;
+  }
+}
+
+@media (max-width: 768px) {
+  .rfid-management {
+    padding: 16px;
+    margin-left: 0;
+    margin-top: 60px;
+  }
+
+  .rfid-management h2 {
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+
+  .main-tab-container {
+    flex-direction: column;
+    gap: 8px;
+    padding: 6px;
+  }
+
+  .main-tab-btn {
+    min-width: auto;
+    padding: 12px 14px;
+  }
+
+  .register-card {
+    padding: 20px;
+    max-width: 100%;
+  }
+
+  .register-form {
+    gap: 16px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+
+  .search-section {
+    flex-direction: column;
+  }
+
+  .search-section .input-field {
+    min-width: auto;
+  }
+
+  .search-section .btn-primary,
+  .search-section .btn-secondary {
+    width: 100%;
+  }
+
+  .manage-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .manage-header h3 {
+    width: 100%;
+  }
+
+  .manage-header .btn-secondary {
+    width: 100%;
+  }
+
+  .cards-table {
+    font-size: 12px;
+  }
+
+  .cards-table th,
+  .cards-table td {
+    padding: 10px 8px;
+  }
+
+  .topup-actions {
+    flex-direction: column;
+  }
+
+  .topup-actions button {
+    width: 100%;
+  }
+
+  .current-balance {
+    font-size: 14px;
+    padding: 16px;
+  }
+
+  .balance-number {
+    font-size: 28px;
+  }
+
+  .btn-toggle {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .rfid-management {
+    padding: 12px;
+  }
+
+  .rfid-management h2 {
+    font-size: 18px;
+  }
+
+  .main-tab-container {
+    gap: 6px;
+    padding: 4px;
+  }
+
+  .main-tab-btn {
+    padding: 10px 8px;
+    font-size: 12px;
+    min-width: 90px;
+  }
+
+  .register-card {
+    padding: 16px;
+  }
+
+  .user-card,
+  .topup-card {
+    padding: 16px;
+  }
+
+  .detail-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .value {
+    text-align: left;
+  }
+
+  .cards-table th,
+  .cards-table td {
+    padding: 8px 6px;
+    font-size: 11px;
+  }
+
+  .current-balance {
+    flex-direction: column;
+    padding: 14px;
+    font-size: 12px;
+  }
+
+  .balance-number {
+    font-size: 24px;
+    margin: 6px 0;
+  }
+
+  .btn-primary,
+  .btn-secondary,
+  .btn-success {
+    padding: 10px 12px;
+    height: 36px;
+    min-width: 80px;
+  }
+}
