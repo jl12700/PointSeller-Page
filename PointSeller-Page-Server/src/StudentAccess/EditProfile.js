@@ -8,6 +8,7 @@ import { supabase } from '../Supabase/supabaseClient';
 import StudentSidebar from '../Components/studentsidebar';
 import TopBar from '../Components/Topbar';
 import { toast } from 'react-toastify';
+import { useError } from "../contexts/errorContext";
 
 function EditProfile() {
   const navigate = useNavigate();
@@ -28,6 +29,10 @@ function EditProfile() {
     new: false,
     confirm: false,
   });
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const { showError } = useError();
 
   // Fetch user's RFID card data
   const fetchCardData = async () => {
@@ -99,6 +104,7 @@ function EditProfile() {
     // Validation
     if (!currentPassword || !newPassword || !confirmPassword) {
       toast.error('Please fill in all password fields');
+      showError('Please fill in all password fields', 'Validation Error');
       return;
     }
 
@@ -134,6 +140,7 @@ function EditProfile() {
         .eq('firebase_uid', user.uid);
 
       toast.success('✅ Password updated successfully!');
+      setSuccessMessage('Password updated successfully!');
       
       // Clear form
       setPasswordForm({
@@ -141,15 +148,21 @@ function EditProfile() {
         newPassword: '',
         confirmPassword: '',
       });
+      
+      // Hide success message after 3 seconds
+      setTimeout(() => setSuccessMessage(''), 3000);
     } catch (error) {
       console.error('Password update error:', error);
       
       if (error.code === 'auth/wrong-password') {
         toast.error('❌ Current password is incorrect');
+        showError('Current password is incorrect', 'Authentication Failed');
       } else if (error.code === 'auth/too-many-requests') {
         toast.error('❌ Too many attempts. Please try again later');
+        showError('Too many attempts. Please try again later', 'Rate Limited');
       } else {
         toast.error(`❌ Failed to update password: ${error.message}`);
+        showError(`Failed to update password: ${error.message}`, 'Update Failed');
       }
     } finally {
       setIsSaving(false);
@@ -161,6 +174,25 @@ function EditProfile() {
       ...prev,
       [field]: !prev[field]
     }));
+  };
+
+  const handleClearForm = () => {
+    setShowConfirmModal(true);
+  };
+
+  const confirmClearForm = () => {
+    setPasswordForm({
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: '',
+    });
+    setShowConfirmModal(false);
+    setSuccessMessage('Form cleared successfully!');
+    setTimeout(() => setSuccessMessage(''), 3000);
+  };
+
+  const cancelClearForm = () => {
+    setShowConfirmModal(false);
   };
 
   if (isLoading) {
@@ -224,6 +256,14 @@ function EditProfile() {
             ← Back to Balance
           </button>
         </div>
+
+        {/* Success Message */}
+        {successMessage && (
+          <div className="success-message">
+            <div className="success-icon">✅</div>
+            <span>{successMessage}</span>
+          </div>
+        )}
 
         <div className="profile-container">
           {/* Account Information Card */}
@@ -405,11 +445,7 @@ function EditProfile() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setPasswordForm({
-                    currentPassword: '',
-                    newPassword: '',
-                    confirmPassword: '',
-                  })}
+                  onClick={handleClearForm}
                   disabled={isSaving}
                   className="btn-cancel"
                 >
@@ -419,6 +455,30 @@ function EditProfile() {
             </form>
           </div>
         </div>
+
+        {/* Confirmation Modal */}
+        {showConfirmModal && (
+          <div className="modal-overlay" onClick={cancelClearForm}>
+            <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+              <h2>Confirm Action</h2>
+              <p>Are you sure you want to proceed?</p>
+              <div className="modal-buttons">
+                <button 
+                  className="modal-btn-secondary" 
+                  onClick={cancelClearForm}
+                >
+                  No
+                </button>
+                <button 
+                  className="modal-btn-primary" 
+                  onClick={confirmClearForm}
+                >
+                  Yes
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );

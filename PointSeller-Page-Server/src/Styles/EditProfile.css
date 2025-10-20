@@ -91,7 +91,8 @@
 
 .info-item {
   display: flex;
-  align-items: flex-start;
+  flex-direction: row; /* icon left, text right */
+  align-items: center; /* vertically center within the row (not page) */
   gap: 15px;
   padding: 15px;
   background: #f7fafc;
@@ -115,15 +116,16 @@
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   flex-shrink: 0;
+  margin-right: 6px; /* subtle spacing to keep icon on left */
 }
 
 .info-content {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  flex: 1;
+  flex: 1; /* take remaining row width */
   align-items: flex-start;
-  text-align: left;
+  text-align: left; /* keep text left-aligned */
 }
 
 .info-label {
@@ -428,6 +430,44 @@
 .btn-primary:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+/* ============================================
+   SUCCESS MESSAGE
+   ============================================ */
+.success-message {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  border: 2px solid #10b981;
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+  animation: slideInSuccess 0.5s ease-out;
+}
+
+.success-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.success-message span {
+  color: #065f46;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+@keyframes slideInSuccess {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ============================================
