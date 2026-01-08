@@ -1,0 +1,288 @@
+/* ========================================
+   LOGOUT POPUP STYLES - ENHANCED VERSION
+   ======================================== */
+
+/* Dark semi-transparent background with blur */
+.logout-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(15, 15, 15, 0.65);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px); /* Safari support */
+  animation: fadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Popup box */
+.logout-popup {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 32px 40px;
+  width: 360px;
+  max-width: 90%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3),
+              0 0 0 1px rgba(0, 0, 0, 0.05);
+  animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+}
+
+/* Optional: Add icon/graphic at top */
+.logout-popup::before {
+  content: '🚪';
+  display: block;
+  font-size: 48px;
+  margin-bottom: 16px;
+  animation: bounce 0.6s ease-in-out;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Text message */
+.logout-popup p {
+  font-size: 1.15rem;
+  color: #1f2937;
+  margin-bottom: 28px;
+  font-weight: 500;
+  line-height: 1.5;
+  font-family: 'Inter', 'Segoe UI', Roboto, Arial, sans-serif;
+}
+
+/* Button container */
+.popup-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* Buttons shared style */
+.popup-buttons button {
+  flex: 1;
+  padding: 12px 20px;
+  font-size: 0.95rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 600;
+  font-family: 'Inter', 'Segoe UI', Roboto, Arial, sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Button ripple effect */
+.popup-buttons button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.popup-buttons button:active::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Confirm button (red) */
+.confirm-btn {
+  background: linear-gradient(135deg, #e63946 0%, #d62828 100%);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(230, 57, 70, 0.4);
+}
+
+.confirm-btn:hover {
+  background: linear-gradient(135deg, #d62828 0%, #c1121f 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(230, 57, 70, 0.5);
+}
+
+.confirm-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(230, 57, 70, 0.4);
+}
+
+/* Cancel button (gray-blue) */
+.cancel-btn {
+  background: linear-gradient(135deg, #f1f3f5 0%, #e9ecef 100%);
+  color: #495057;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  border: 1px solid #dee2e6;
+}
+
+.cancel-btn:hover {
+  background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  color: #212529;
+}
+
+.cancel-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Focus states for accessibility */
+.popup-buttons button:focus-visible {
+  outline: 3px solid #667eea;
+  outline-offset: 2px;
+}
+
+/* Disabled state */
+.popup-buttons button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Smooth animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Fade out animation when closing */
+.logout-popup-overlay.closing {
+  animation: fadeOut 0.2s ease-out forwards;
+}
+
+.logout-popup-overlay.closing .logout-popup {
+  animation: scaleOut 0.2s ease-out forwards;
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes scaleOut {
+  to {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+}
+
+/* Mobile friendly */
+@media (max-width: 480px) {
+  .logout-popup {
+    width: 90%;
+    padding: 28px 24px;
+    border-radius: 14px;
+  }
+
+  .logout-popup::before {
+    font-size: 40px;
+    margin-bottom: 12px;
+  }
+
+  .logout-popup p {
+    font-size: 1rem;
+    margin-bottom: 24px;
+  }
+
+  .popup-buttons {
+    flex-direction: column-reverse; /* Cancel on top on mobile */
+    gap: 10px;
+  }
+
+  .popup-buttons button {
+    width: 100%;
+    padding: 14px 20px;
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 481px) and (max-width: 768px) {
+  .logout-popup {
+    width: 380px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .logout-popup-overlay,
+  .logout-popup,
+  .popup-buttons button,
+  .logout-popup::before {
+    animation: none;
+    transition: none;
+  }
+
+  .popup-buttons button:hover {
+    transform: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .logout-popup {
+    border: 2px solid #000;
+  }
+
+  .confirm-btn {
+    border: 2px solid #000;
+  }
+
+  .cancel-btn {
+    border: 2px solid #000;
+  }
+}
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+  .logout-popup {
+    background: #1f2937;
+    color: #f3f4f6;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+
+  .logout-popup p {
+    color: #f3f4f6;
+  }
+
+  .cancel-btn {
+    background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
+    color: #f3f4f6;
+    border: 1px solid #6b7280;
+  }
+
+  .cancel-btn:hover {
+    background: linear-gradient(135deg, #4b5563 0%, #6b7280 100%);
+    color: #ffffff;
+  }
+}

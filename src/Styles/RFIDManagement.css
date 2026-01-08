@@ -1,0 +1,1222 @@
+/* ============================================
+   RFID Management - Enhanced Professional CSS
+   Fixed Layout Positioning: TopBar (60px) + Sidebar (250px)
+   ============================================ */
+
+/* Main Content Positioning */
+.rfid-management {
+  margin-top: 60px;
+  margin-left: 250px;
+  padding: 30px;
+  min-height: calc(100vh - 60px);
+  background-color: #f5f7fa;
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+/* Page Header */
+.rfid-management h2 {
+  color: black;
+  background: white;
+  padding: 20px 30px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  font-size: 24px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================
+   TAB NAVIGATION
+   ============================================ */
+.main-tab-container {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 30px;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 0;
+}
+
+.main-tab-btn {
+  background: transparent;
+  border: none;
+  padding: 15px 25px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 3px solid transparent;
+  position: relative;
+}
+
+.main-tab-btn:hover {
+  color: #4299e1;
+  background-color: #f8fafc;
+}
+
+.main-tab-btn.active {
+  color: #4299e1;
+  border-bottom-color: #4299e1;
+  font-weight: 600;
+}
+
+/* ============================================
+   TAB CONTENT CONTAINERS
+   ============================================ */
+.tab-content {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+
+   margin: 0 auto; /* centers it */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  border: 1px solid gainsboro; /* 👈 proper border */
+
+}
+
+/* ============================================
+   SEARCH SECTION
+   ============================================ */
+.search-section {
+  /* Ensure it's a flex container */
+  display: flex; 
+  /* Crucially, align items to the start (left) */
+  justify-content: flex-start; 
+  
+  /* Add other necessary styles like gap, alignment, etc. */
+  gap: 10px; /* Optional: Add some space between the input and button */
+  align-items: center; /* Optional: Align items vertically in the center */
+  width: 100%; /* Ensure it spans the full width of its parent */
+}
+
+.rfid-input-field {
+  flex: 1;
+  width: 96%;
+  padding: 12px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.rfid-input-field:focus {
+  outline: none;
+  border-color: #4299e1;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.rfid-input-field:disabled {
+  background-color: #f1f5f9;
+  cursor: not-allowed;
+}
+
+/* Search Dropdown */
+.search-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  margin-top: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  z-index: 1000;
+}
+
+.search-dropdown-item {
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.search-dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.search-dropdown-item:hover {
+  background-color: #f8fafc;
+}
+
+.dropdown-item-name {
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+
+.dropdown-item-details {
+  font-size: 13px;
+  color: #64748b;
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+.rfid-btn-primary {
+  background-color: #4299e1;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.rfid1-btn-primary{
+  background-color: #4299e1;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  display: block; /* makes margin-left effective */
+  margin-left: 0; /* push it to the left */
+}
+.rfid-btn-primary:hover:not(:disabled) {
+  background-color: #3182ce;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(66, 153, 225, 0.3);
+}
+
+.rfid-btn-primary:disabled {
+  background-color: #cbd5e1;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-success {
+  background-color: #48bb78;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-success:hover:not(:disabled) {
+  background-color: #38a169;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(72, 187, 120, 0.3);
+}
+
+.btn-success:disabled {
+  background-color: #cbd5e1;
+  cursor: not-allowed;
+}
+
+.btn-danger {
+  background-color: #f56565;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background-color: #e53e3e;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(245, 101, 101, 0.3);
+}
+
+.rfid-btn-secondary {
+  background-color: #e2e8f0;
+  color: #475569;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.rfid-btn-secondary:hover:not(:disabled) {
+  background-color: #cbd5e1;
+}
+
+.rfid-btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ============================================
+   USER CARD
+   ============================================ */
+.user-card {
+  background: linear-gradient(135deg, #4299e1, #3182ce);
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 30px;
+  color: white;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25);
+  margin-top: 30px;
+ 
+}
+
+.user-card h3 {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-row .label {
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.detail-row .value {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.detail-row.balance-row {
+  margin-top: 8px;
+  padding-top: 16px;
+ 
+  border-bottom: none;
+}
+
+.balance-value {
+  font-size: 24px !important;
+  font-weight: 700 !important;
+}
+
+/* ============================================
+   TOPUP SECTION
+   ============================================ */
+.topup-section {
+  margin-top: 30px;
+}
+
+.topup-card {
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 25px;
+}
+
+.current-balance {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+  border-radius: 8px;
+  margin-bottom: 25px;
+  color: white;
+}
+
+.current-balance span:first-child {
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.95;
+}
+
+.balance-number {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.topup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.topup-form label {
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.amount-input-group {
+  display: flex;
+  align-items: center;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.amount-input-group:focus-within {
+  border-color: #4299e1;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.currency-symbol {
+  background-color: #f8fafc;
+  padding: 12px 16px;
+  font-weight: 600;
+  color: #475569;
+  border-right: 2px solid #e2e8f0;
+}
+
+.amount-input {
+  flex: 1;
+  border: none !important;
+  padding: 12px 16px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.amount-input:focus {
+  outline: none;
+  box-shadow: none !important;
+}
+
+.topup-preview {
+  background-color: #f0f9ff;
+  border: 2px solid #bae6fd;
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 15px;
+}
+
+.topup-preview p {
+  margin: 0;
+  color: #0c4a6e;
+  font-size: 14px;
+}
+
+.topup-preview strong {
+  font-size: 18px;
+  color: #0369a1;
+}
+
+.limit-warning {
+  color: #dc2626 !important;
+  font-weight: 600;
+  margin-top: 8px !important;
+}
+
+.balance-limit-info {
+  background-color: #fef3c7;
+  border-left: 4px solid #f59e0b;
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin-top: 15px;
+}
+
+.balance-limit-info small {
+  color: #92400e;
+  font-size: 13px;
+}
+
+.topup-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+/* ============================================
+   REGISTER FORM
+   ============================================ */
+.register-card {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.register-card h3 {
+  color: #1e293b;
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.register-subtitle {
+  color: #64748b;
+  font-size: 14px;
+  margin-bottom: 30px;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.form-group small {
+  color: #64748b;
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+.input-field {
+  padding: 12px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: #4299e1;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.input-field:disabled {
+  background-color: #f1f5f9;
+  cursor: not-allowed;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.password-input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-group input {
+  flex: 1;
+  padding-right: 50px;
+}
+
+.toggle-password-btn {
+  position: absolute;
+  right: 12px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 6px;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.toggle-password-btn:hover {
+  opacity: 1;
+}
+
+.form-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+/* ============================================
+   CARD MANAGEMENT TABLE
+   ============================================ */
+.manage-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.manage-header h3 {
+  color: #1e293b;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.manage-actions {
+  display: flex;
+  gap: 12px;
+}
+
+/* Search Bar in Card Management */
+.app-card-search-container {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.app-card-search-input {
+  width: 100%;
+  padding: 12px 16px 12px 45px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.app-card-search-input:focus {
+  outline: none;
+  border-color: #4299e1;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.app-card-search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #64748b;
+  font-size: 16px;
+}
+
+/* Sort and Filter Controls */
+.app-sort-filter-controls {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.app-sort-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.app-sort-filter-label {
+  font-weight: 600;
+  color: #475569;
+  font-size: 14px;
+}
+
+.app-sort-filter-select {
+  padding: 8px 32px 8px 12px;
+  border: 2px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23475569' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+
+.app-sort-filter-select:focus {
+  outline: none;
+  border-color: #4299e1;
+}
+
+.cards-table-container {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.cards-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.cards-table thead {
+  background-color: #000000;
+  color: white;
+}
+
+.cards-table th {
+  padding: 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cards-table tbody tr {
+  border-bottom: 1px solid #f1f5f9;
+  transition: background-color 0.15s ease;
+}
+
+.cards-table tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+.cards-table td {
+  padding: 16px;
+  color: #334155;
+  font-size: 14px;
+}
+
+.cards-table td.rfid-uid {
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  color: #4299e1;
+}
+
+.cards-table td.balance {
+  font-weight: 700;
+  color: #059669;
+  font-size: 15px;
+}
+
+.cards-table td.date {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge.status-active {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.status-badge.status-inactive {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.cards-table td.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-toggle {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-toggle.activate {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.btn-toggle.activate:hover {
+  background-color: #a7f3d0;
+}
+
+.btn-toggle.deactivate {
+  background-color: #fed7aa;
+  color: #9a3412;
+}
+
+.btn-toggle.deactivate:hover {
+  background-color: #fdba74;
+}
+
+.btn-delete {
+  padding: 8px 16px;
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-delete:hover {
+  background-color: #fecaca;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #64748b;
+}
+
+.empty-state p {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+/* ============================================
+   MODALS
+   ============================================ */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+.modal-container {
+  background: white;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.rfid-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px 25px;
+  border-bottom: 2px solid #f1f5f9;
+  width: 80%x;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.modal-close {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+  background-color: #f1f5f9;
+  color: #1e293b;
+}
+
+.rfid-modal-body {
+  padding: 25px;
+  padding-right: 50px;
+  width: 80%;
+}
+
+.rfid-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 20px 25px;
+  border-top: 2px solid #f1f5f9;
+}
+
+/* Transfer Modal Specific */
+.selected-card-info {
+  margin-top: 8px;
+  padding: 10px 12px;
+  background-color: #f0f9ff;
+  border: 2px solid #bae6fd;
+  border-radius: 6px;
+  color: #0369a1;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.transfer-preview {
+  background-color: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 15px;
+}
+
+.preview-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  color: #475569;
+  font-size: 14px;
+}
+
+.preview-row:not(:last-child) {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.preview-row strong {
+  color: #1e293b;
+  font-size: 16px;
+}
+
+/* Delete Confirmation Modal */
+.delete-modal .warning-text {
+  color: #dc2626;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.delete-card-details {
+  background-color: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.delete-card-details .detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #e2e8f0;
+  color: #1e293b;
+}
+
+.delete-card-details .detail-row:last-child {
+  border-bottom: none;
+}
+
+.delete-card-details .label {
+  font-weight: 600;
+  color: #64748b;
+}
+
+.delete-card-details .value {
+  font-weight: 600;
+}
+
+.warning-box {
+  background-color: #fef3c7;
+  border-left: 4px solid #f59e0b;
+  padding: 15px;
+  border-radius: 6px;
+}
+
+.warning-box p {
+  font-weight: 600;
+  color: #92400e;
+  margin: 0 0 10px 0;
+}
+
+.warning-box ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #92400e;
+}
+
+.warning-box li {
+  margin: 6px 0;
+  font-size: 13px;
+}
+
+/* Confirmation Modal (Register Review) */
+.app-confirm-register-modal .modal-body {
+  padding: 25px;
+}
+
+.app-review-section {
+  margin-bottom: 25px;
+}
+
+.app-review-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 15px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.app-review-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.app-review-item:last-child {
+  border-bottom: none;
+}
+
+.app-review-label {
+  font-weight: 600;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.app-review-value {
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 14px;
+  text-align: right;
+}
+
+.app-review-note {
+  background-color: #f0f9ff;
+  border-left: 4px solid #4299e1;
+  padding: 12px 15px;
+  border-radius: 6px;
+  margin-top: 20px;
+}
+
+.app-review-note p {
+  margin: 0;
+  color: #0c4a6e;
+  font-size: 13px;
+}
+
+/* ============================================
+   REGISTERED USERS TABLE (Search & Topup Tab)
+   ============================================ */
+.app-registered-users-section {
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 2px solid #e2e8f0;
+}
+
+.app-registered-users-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.app-registered-users-header h3 {
+  color: #1e293b;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* ============================================
+   TRANSFER HISTORY
+   ============================================ */
+.app-transfer-history-section {
+  margin-top: 40px;
+}
+
+.app-transfer-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.app-transfer-history-header h3 {
+  color: #1e293b;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.app-transfer-history-table-container {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.app-transfer-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.app-transfer-history-table thead {
+  background-color: #000000;
+  color: white;
+}
+
+.app-transfer-history-table th {
+  padding: 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.app-transfer-history-table tbody tr {
+  border-bottom: 1px solid #f1f5f9;
+  transition: background-color 0.15s ease;
+}
+
+.app-transfer-history-table tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+.app-transfer-history-table td {
+  padding: 16px;
+  color: #334155;
+  font-size: 14px;
+}
+
+.app-transfer-amount-positive {
+  color: #059669;
+  font-weight: 700;
+}
+
+.app-transfer-amount-negative {
+  color: #dc2626;
+  font-weight: 700;
+}
+
+.app-transfer-date {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.app-transfer-empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #64748b;
+  background-color: #f8fafc;
+  border-radius: 8px;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+@media (max-width: 1024px) {
+  .rfid-management {
+    margin-left: 0;
+    padding: 20px;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .search-section {
+    flex-direction: column;
+  }
+  
+  .manage-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .manage-actions {
+    width: 100%;
+  }
+  
+  .manage-actions button {
+    flex: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .rfid-management {
+    margin-top: 60px;
+    padding: 15px;
+  }
+  
+  .main-tab-container {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+  
+  .main-tab-btn {
+    white-space: nowrap;
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+  
+  .cards-table-container {
+    overflow-x: scroll;
+  }
+  
+  .cards-table {
+    min-width: 800px;
+  }
+  
+  .topup-actions {
+    flex-direction: column;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .modal-container {
+    margin: 10px;
+    max-height: 95vh;
+  }
+  
+  .app-sort-filter-controls {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .app-sort-filter-group {
+    width: 100%;
+  }
+  
+  .app-sort-filter-select {
+    flex: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .rfid-management h2 {
+    font-size: 20px;
+    padding: 15px 20px;
+  }
+  
+  .tab-content {
+    padding: 20px;
+  }
+  
+  .balance-number {
+    font-size: 24px;
+  }
+  
+  .modal-header h3 {
+    font-size: 18px;
+  }
+}

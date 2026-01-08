@@ -1,0 +1,623 @@
+/* ========================================
+   CARD APPLICATION PAGE STYLES
+   ======================================== */
+
+/* Card Application Container */
+.card-app-container {
+  position: fixed;
+  top: 60px; /* align with fixed 60px TopBar */
+  left: 0;
+  width: 100vw;
+  height: calc(100vh - 60px);
+  background: linear-gradient(180deg, #1b2430 0%, #121820 100%); /* match login pages */
+  overflow-y: auto;
+  padding: 30px 20px;
+  box-sizing: border-box;
+}
+
+/* Registration Card */
+.card-app-card {
+  max-width: 1050px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid #eef2f7;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.06);
+  overflow: hidden;
+  animation: slideUp 0.4s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Header */
+.card-app-header {
+  background: linear-gradient(135deg, #047857 0%, #059669 100%);
+  padding: 24px 28px;
+  color: #ffffff;
+  position: relative;
+  border-bottom: 3px solid #10b981;
+}
+
+.back-btn {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  margin-bottom: 12px;
+  transition: all 0.2s ease;
+  font-family: 'Inter', 'Segoe UI', Roboto, Arial, sans-serif;
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.card-app-header h2 {
+  margin: 0 0 6px 0;
+  font-size: 28px;
+  font-family: 'Inter', 'Segoe UI', Roboto, Arial, sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: #e5e7eb;
+  font-weight: 500;
+}
+
+/* Form */
+.card-app-form {
+  padding: 28px 28px 26px 28px;
+}
+
+/* Form Sections */
+.form-section {
+  margin-bottom: 28px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.form-section:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.section-title {
+  color: #047857;
+  font-size: 18px;
+  margin: 0 0 16px 0;
+  font-family: 'Inter', 'Segoe UI', Roboto, Arial, sans-serif;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #10b981;
+}
+
+/* Form Groups */
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 18px; /* rows x columns */
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  color: #374151;
+  font-weight: 600;
+  font-size: 12px;
+  font-family: 'Inter', 'Segoe UI', Roboto, Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* Field hints and notes */
+.field-hint {
+  color: #6b7280;
+  font-size: 12px;
+  margin: 0 0 8px 0;
+  font-style: italic;
+  font-family: 'Trebuchet MS', Arial, sans-serif;
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: normal;
+}
+
+.field-note {
+  color: #9ca3af;
+  font-size: 11px;
+  margin: 8px 0 0 0;
+  font-style: italic;
+  font-family: 'Trebuchet MS', Arial, sans-serif;
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: normal;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+  font-family: 'Inter', 'Segoe UI', Roboto, Arial, sans-serif;
+  background-color: #f8fafc;
+  max-width: 100%; /* unified: fill available column width */
+}
+
+/* Keep single-column long fields the same length as others */
+input[name="email"],
+input[name="fullName"] {
+  max-width: calc((100% - 18px) / 2); /* match half of row width */
+}
+
+.form-input:focus,
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #10b981 !important; /* enforce green focus */
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12) !important; /* green ring to match section lines */
+}
+
+.form-input::placeholder {
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+/* Textarea */
+.form-textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+  font-family: 'Inter', 'Segoe UI', Roboto, Arial, sans-serif;
+  background-color: #f8fafc;
+  resize: vertical;
+  min-height: 120px;
+}
+
+.form-textarea:focus {
+  outline: none;
+  border-color: #10b981 !important;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12) !important;
+}
+
+.form-textarea::placeholder {
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+/* File Upload */
+.file-upload-wrapper {
+  margin-top: 12px;
+}
+
+.file-input {
+  display: none;
+}
+
+.file-btn {
+  display: block;
+  width: 100%;
+  max-width: calc((100% - 18px) / 2); /* match input field width */
+  padding: 12px 14px;
+  border: 1px dashed #d1d5db;
+  border-radius: 10px;
+  background-color: #f8fafc;
+  color: #6b7280;
+  text-align: center;
+  transition: all 0.2s ease;
+  font-size: 13px;
+  font-family: 'Inter', 'Segoe UI', Roboto, Arial, sans-serif;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+/* Grid inputs span their column fully; ensures uniform length per row */
+.form-row .form-input { max-width: 100%; }
+
+.file-btn:hover {
+  border-color: #10b981;
+  background-color: #ecfdf5;
+  color: #10b981;
+}
+
+.file-note {
+  color: #6b7280;
+  font-size: 12px;
+  font-style: italic;
+  margin: 8px 0 0 0;
+}
+
+.image-preview {
+  margin-top: 16px;
+}
+
+/* Checkbox */
+.checkbox-group {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 18px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+  font-family: 'Trebuchet MS', Arial, sans-serif;
+}
+
+.checkbox-label input[type="checkbox"] {
+  margin-top: 3px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  flex-shrink: 0;
+  accent-color: #10b981;
+}
+
+.checkbox-label input[type="checkbox"]:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.checkbox-text {
+  color: #374151;
+  font-size: 13px;
+  line-height: 1.6;
+  flex: 1;
+}
+
+/* Form Actions */
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+  justify-content: flex-end;
+}
+
+.cardamin-submit-btn {
+  padding: 12px 28px;
+  background: linear-gradient(135deg, #047857 0%, #10b981 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-family: 'Inter', 'Segoe UI', Roboto, Arial, sans-serif;
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
+  letter-spacing: 0.2px;
+}
+
+.submit-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(16, 185, 129, 0.4);
+}
+
+.submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cancel-btn {
+  padding: 12px 24px;
+  background: #ffffff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-family: 'Inter', 'Segoe UI', Roboto, Arial, sans-serif;
+  letter-spacing: 0.2px;
+}
+
+.cancel-btn:hover {
+  border-color: #9ca3af;
+  background-color: #f9fafb;
+}
+
+.cancel-btn:active {
+  transform: scale(0.98);
+}
+
+/* Success Modal Overlay */
+.success-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Success Modal */
+.success-modal {
+  background: white;
+  border-radius: 16px;
+  padding: 50px 40px 40px 40px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  animation: slideInScale 0.4s ease-out;
+}
+
+@keyframes slideInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Success Icon with Checkmark Animation */
+.success-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 30px;
+}
+
+.checkmark {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: block;
+  stroke-width: 3;
+  stroke: #10b981;
+  stroke-miterlimit: 10;
+  box-shadow: inset 0px 0px 0px #10b981;
+  animation: fill 0.4s ease-in-out 0.4s forwards, scale 0.3s ease-in-out 0.9s both;
+}
+
+.checkmark-circle {
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  stroke-width: 3;
+  stroke-miterlimit: 10;
+  stroke: #10b981;
+  fill: none;
+  animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.checkmark-check {
+  transform-origin: 50% 50%;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  stroke: #10b981;
+  stroke-width: 3;
+  animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+}
+
+@keyframes stroke {
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes scale {
+  0%, 100% {
+    transform: none;
+  }
+  50% {
+    transform: scale3d(1.1, 1.1, 1);
+  }
+}
+
+@keyframes fill {
+  100% {
+    box-shadow: inset 0px 0px 0px 30px #d1fae5;
+  }
+}
+
+/* Success Modal Text */
+.success-title {
+  color: #047857;
+  font-size: 26px;
+  font-weight: 600;
+  margin: 0 0 20px 0;
+  font-family: 'Trebuchet MS', Arial, sans-serif;
+}
+
+.success-message {
+  color: #4b5563;
+  font-size: 16px;
+  margin: 0 0 12px 0;
+  line-height: 1.6;
+  font-family: 'Trebuchet MS', Arial, sans-serif;
+}
+
+.success-email {
+  color: #6b7280;
+  font-size: 14px;
+  margin: 20px 0 15px 0;
+  padding: 15px;
+  background-color: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 8px;
+  font-family: 'Trebuchet MS', Arial, sans-serif;
+}
+
+.success-email strong {
+  color: #047857;
+}
+
+.success-note {
+  color: #92400e;
+  font-size: 13px;
+  margin: 0 0 25px 0;
+  padding: 12px 15px;
+  background-color: #fef3c7;
+  border: 1px solid #fde68a;
+  border-radius: 8px;
+  font-family: 'Trebuchet MS', Arial, sans-serif;
+  line-height: 1.5;
+}
+
+/* Success OK Button */
+.success-ok-btn {
+  background: linear-gradient(135deg, #047857 0%, #10b981 100%);
+  color: white;
+  border: none;
+  padding: 14px 48px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Trebuchet MS', Arial, sans-serif;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+}
+
+.success-ok-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+  background: linear-gradient(135deg, #065f46 0%, #059669 100%);
+}
+
+.success-ok-btn:active {
+  transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .card-app-container {
+    padding: 20px 15px;
+  }
+
+  .card-app-form {
+    padding: 24px 20px;
+  }
+
+  .card-app-header {
+    padding: 24px;
+  }
+
+  .card-app-header h2 {
+    font-size: 24px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  /* On mobile, all fields span full width */
+  input[name="email"],
+  input[name="fullName"],
+  .file-btn {
+    max-width: 100%;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+
+  .submit-btn,
+  .cancel-btn {
+    width: 100%;
+    padding: 14px;
+  }
+
+  .success-modal {
+    padding: 40px 30px 30px 30px;
+  }
+
+  .success-title {
+    font-size: 22px;
+  }
+
+  .success-message {
+    font-size: 15px;
+  }
+
+  .success-icon {
+    width: 70px;
+    height: 70px;
+  }
+
+  .checkmark {
+    width: 70px;
+    height: 70px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card-app-card {
+    border-radius: 8px;
+  }
+
+  .card-app-header {
+    padding: 20px;
+  }
+
+  .card-app-form {
+    padding: 24px 20px;
+  }
+
+  .section-title {
+    font-size: 16px;
+  }
+
+  .checkbox-text {
+    font-size: 12px;
+  }
+}
