@@ -91,7 +91,7 @@ const StallsReport = () => {
             vendorMap.set(vendorId, {
               id: vendorId,
               businessName: order.businessName || order.storeName || 'Unknown Stall',
-              category: order.category || 'General',
+              category: order.category || 'Food Stall',
               totalSales: 0,
               transactionCount: 0,
               pointsEarned: 0,
@@ -262,6 +262,14 @@ const StallsReport = () => {
       return;
     }
 
+    // Get top 5 stalls by sales
+    const topStalls = [...processedData]
+      .sort((a, b) => b.totalSales - a.totalSales)
+      .slice(0, 5);
+
+    // Calculate max sales for graph scaling
+    const maxSales = topStalls.length > 0 ? topStalls[0].totalSales : 0;
+
     const printWindow = window.open('', '_blank');
     printWindow.document.write(`
       <!DOCTYPE html>
@@ -295,7 +303,7 @@ const StallsReport = () => {
           }
           .summary-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 15px;
             margin-bottom: 30px;
           }
@@ -316,6 +324,14 @@ const StallsReport = () => {
             font-size: 20px;
             font-weight: bold;
             color: #000;
+          }
+          .section-title {
+            margin: 40px 0 20px 0;
+            font-size: 20px;
+            font-weight: bold;
+            color: #000;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
           }
           table {
             width: 100%;
@@ -344,6 +360,64 @@ const StallsReport = () => {
             background: #e8f5e9 !important;
             border-top: 2px solid #4caf50;
           }
+          .top-stalls-section {
+            margin-top: 40px;
+            page-break-before: always;
+          }
+          .graph-container {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+          }
+          .graph-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            page-break-inside: avoid;
+          }
+          .graph-label {
+            width: 200px;
+            font-size: 12px;
+            font-weight: bold;
+            padding-right: 10px;
+            text-align: right;
+          }
+          .graph-bar-container {
+            flex: 1;
+            background: #e0e0e0;
+            height: 30px;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+          }
+          .graph-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #059669);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+            transition: width 0.3s ease;
+          }
+          .rank-badge {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            line-height: 24px;
+            text-align: center;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 11px;
+            margin-right: 8px;
+          }
+          .rank-1 { background: #ffd700; color: #000; }
+          .rank-2 { background: #c0c0c0; color: #000; }
+          .rank-3 { background: #cd7f32; color: #fff; }
+          .rank-other { background: #e0e0e0; color: #666; }
         </style>
       </head>
       <body>
@@ -367,30 +441,20 @@ const StallsReport = () => {
             <p>${overallStats.totalTransactions}</p>
           </div>
           <div class="summary-card">
-            <h3>Points Earned</h3>
-            <p>${overallStats.totalPointsEarned}</p>
-          </div>
-          <div class="summary-card">
-            <h3>Points Redeemed</h3>
-            <p>${overallStats.totalPointsRedeemed}</p>
-          </div>
-          <div class="summary-card">
             <h3>Active Stalls</h3>
             <p>${overallStats.totalStalls}</p>
           </div>
         </div>
 
+        <h2 class="section-title">ALL STALLS SALES REPORT</h2>
         <table>
           <thead>
             <tr>
               <th style="width: 5%;">#</th>
-              <th style="width: 25%;">Stall Name</th>
-              <th style="width: 20%;">Vendor</th>
-              <th style="width: 15%;">Category</th>
-              <th style="width: 10%; text-align: right;">Sales</th>
-              <th style="width: 10%; text-align: right;">Transactions</th>
-              <th style="width: 10%; text-align: right;">Points +</th>
-              <th style="width: 10%; text-align: right;">Points -</th>
+              <th style="width: 35%;">Stall Name</th>
+              <th style="width: 20%;">Category</th>
+              <th style="width: 20%; text-align: right;">Sales</th>
+              <th style="width: 20%; text-align: right;">Transactions</th>
             </tr>
           </thead>
           <tbody>
@@ -401,19 +465,64 @@ const StallsReport = () => {
                 <td>${stall.category}</td>
                 <td style="text-align: right;"><strong>₱${stall.totalSales.toFixed(2)}</strong></td>
                 <td style="text-align: right;">${stall.transactionCount}</td>
-                <td style="text-align: right;">+${stall.pointsEarned}</td>
-                <td style="text-align: right;">-${stall.pointsRedeemed}</td>
               </tr>
             `).join('')}
             <tr class="total-row">
-              <td colspan="4" style="text-align: right;"><strong>TOTALS:</strong></td>
+              <td colspan="3" style="text-align: right;"><strong>TOTALS:</strong></td>
               <td style="text-align: right;"><strong>₱${overallStats.totalSales.toFixed(2)}</strong></td>
               <td style="text-align: right;"><strong>${overallStats.totalTransactions}</strong></td>
-              <td style="text-align: right;"><strong>+${overallStats.totalPointsEarned}</strong></td>
-              <td style="text-align: right;"><strong>-${overallStats.totalPointsRedeemed}</strong></td>
             </tr>
           </tbody>
         </table>
+
+        <div class="top-stalls-section">
+          <h2 class="section-title">TOP 5 PERFORMING STALLS</h2>
+          
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 8%;">Rank</th>
+                <th style="width: 35%;">Stall Name</th>
+                <th style="width: 20%;">Category</th>
+                <th style="width: 17%; text-align: right;">Sales</th>
+                <th style="width: 20%; text-align: right;">Transactions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${topStalls.map((stall, index) => `
+                <tr>
+                  <td style="text-align: center;">
+                    <span class="rank-badge rank-${index < 3 ? index + 1 : 'other'}">${index + 1}</span>
+                  </td>
+                  <td><strong>${stall.businessName}</strong></td>
+                  <td>${stall.category}</td>
+                  <td style="text-align: right;"><strong>₱${stall.totalSales.toFixed(2)}</strong></td>
+                  <td style="text-align: right;">${stall.transactionCount}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+
+          <div class="graph-container">
+            <h3 style="margin-top: 0; margin-bottom: 20px; font-size: 16px;">Sales Performance Comparison</h3>
+            ${topStalls.map((stall, index) => {
+              const percentage = maxSales > 0 ? (stall.totalSales / maxSales) * 100 : 0;
+              return `
+                <div class="graph-bar">
+                  <div class="graph-label">
+                    <span class="rank-badge rank-${index < 3 ? index + 1 : 'other'}">${index + 1}</span>
+                    ${stall.businessName.length > 20 ? stall.businessName.substring(0, 20) + '...' : stall.businessName}
+                  </div>
+                  <div class="graph-bar-container">
+                    <div class="graph-bar-fill" style="width: ${percentage}%;">
+                      ₱${stall.totalSales.toFixed(2)}
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
       </body>
       </html>
     `);
