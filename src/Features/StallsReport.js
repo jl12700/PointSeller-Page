@@ -1,91 +1,56 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { 
-  FaChartBar, 
-  FaTrophy, 
-  FaArrowUp, 
-  FaArrowDown,
-  FaCalendarAlt,
-  FaStore,
-  FaReceipt,
-  FaCoins,
-  FaFilter,
-  FaDownload,
-  FaSync,
-  FaPrint,
-  FaChartLine,
-  FaInfinity
-} from 'react-icons/fa';
-import { collection, getDocs, query, where, orderBy } from 'firebase/firestore';
+import { FaChartBar, FaTrophy, FaArrowDown, FaCalendarAlt, FaStore, FaDownload, FaSync, FaPrint, FaChartLine, FaCalendar } from 'react-icons/fa';
+import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import '../Styles/StallsReport.css';
 import { posDb as db } from '../firebase/firebase';
 import Sidebar from '../Components/Sidebar';
 import TopBar from '../Components/Topbar';
 
-/**
- * PayTap Stalls Report Component
- * Displays comprehensive sales analytics for all cafeteria stalls
- * Features: Firebase integration, sorting, filtering, performance metrics, and export
- * 
- * ENHANCED FEATURES:
- * - Performance comparison analytics (bar/line charts)
- * - All-time sales mode (date-independent view)
- */
 const StallsReport = () => {
-  // ==================== STATE MANAGEMENT ====================
   const [stallsData, setStallsData] = useState([]);
   const [sortBy, setSortBy] = useState('highest');
   const [filterCategory, setFilterCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [isLoading, setIsLoading] = useState(false);
-  
-  // NEW: View mode and chart visibility
-  const [viewMode, setViewMode] = useState('daily'); // 'daily' or 'all-time'
+  const [viewMode, setViewMode] = useState('daily');
+  const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7));
   const [showChart, setShowChart] = useState(false);
-  const [chartType, setChartType] = useState('bar'); // 'bar' or 'line'
+  const [chartType, setChartType] = useState('bar');
 
-  // ==================== FETCH DATA FROM FIREBASE ====================
-  
   useEffect(() => {
     fetchStallsReport();
-  }, [selectedDate, viewMode]); // Re-fetch when date or mode changes
+  }, [selectedDate, selectedMonth, viewMode]);
 
-  /**
-   * ENHANCED: Fetch all orders and aggregate by vendor/stall
-   * Now supports both daily and all-time modes
-   */
   const fetchStallsReport = async () => {
     setIsLoading(true);
     try {
-      console.log(`📊 Fetching stalls report (${viewMode} mode) for date:`, selectedDate);
-
-      // Fetch all orders
       const ordersRef = collection(db, 'orders');
       const q = query(ordersRef, orderBy('createdAt', 'desc'));
       const querySnapshot = await getDocs(q);
-
-      // Aggregate orders by vendor
       const vendorMap = new Map();
 
       querySnapshot.forEach((doc) => {
         const order = { id: doc.id, ...doc.data() };
-        
-        // Filter by selected date ONLY if in 'daily' mode
         let includeOrder = true;
-        if (viewMode === 'daily' && order.createdAt) {
-          const targetDate = new Date(selectedDate);
-          targetDate.setHours(0, 0, 0, 0);
-          const nextDay = new Date(targetDate);
-          nextDay.setDate(nextDay.getDate() + 1);
-          
+        if (order.createdAt) {
           const orderDate = order.createdAt?.toDate ? order.createdAt.toDate() : new Date(order.createdAt);
-          includeOrder = (orderDate >= targetDate && orderDate < nextDay);
+          if (viewMode === 'daily') {
+            const targetDate = new Date(selectedDate);
+            targetDate.setHours(0, 0, 0, 0);
+            const nextDay = new Date(targetDate);
+            nextDay.setDate(nextDay.getDate() + 1);
+            includeOrder = (orderDate >= targetDate && orderDate < nextDay);
+          } else if (viewMode === 'monthly') {
+            const orderYear = orderDate.getFullYear();
+            const orderMonth = orderDate.getMonth() + 1;
+            const [selectedYear, selectedMonthNum] = selectedMonth.split('-').map(Number);
+            includeOrder = (orderYear === selectedYear && orderMonth === selectedMonthNum);
+          }
         }
-        
         if (includeOrder) {
           const vendorId = order.vendorId;
-          
           if (!vendorMap.has(vendorId)) {
             const orderDate = order.createdAt?.toDate ? order.createdAt.toDate() : new Date(order.createdAt);
             vendorMap.set(vendorId, {
@@ -101,51 +66,30 @@ const StallsReport = () => {
               endTime: orderDate
             });
           }
-
           const vendorData = vendorMap.get(vendorId);
-          
-          // Only count completed orders for sales
           if (order.status?.toLowerCase() === 'completed') {
             vendorData.totalSales += order.totalAmount || 0;
             vendorData.transactionCount += 1;
-            
-            // Calculate points (1 point per peso)
             vendorData.pointsEarned += Math.floor(order.totalAmount || 0);
-            
-            // Track points redeemed if available
             if (order.pointsUsed) {
               vendorData.pointsRedeemed += order.pointsUsed;
             }
           }
-
-          // Track earliest and latest order times
           const orderDate = order.createdAt?.toDate ? order.createdAt.toDate() : new Date(order.createdAt);
-          if (orderDate < vendorData.startTime) {
-            vendorData.startTime = orderDate;
-          }
-          if (orderDate > vendorData.endTime) {
-            vendorData.endTime = orderDate;
-          }
-
+          if (orderDate < vendorData.startTime) vendorData.startTime = orderDate;
+          if (orderDate > vendorData.endTime) vendorData.endTime = orderDate;
           vendorData.orders.push(order);
         }
       });
-
-      // Convert map to array
-      const stallsArray = Array.from(vendorMap.values());
-      
-      console.log('📦 Processed stalls data:', stallsArray.length, 'stalls');
-      setStallsData(stallsArray);
+      setStallsData(Array.from(vendorMap.values()));
     } catch (error) {
-      console.error('❌ Error fetching stalls report:', error);
+      console.error('Error:', error);
       setStallsData([]);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // ==================== COMPUTED VALUES ====================
-  
   const overallStats = {
     totalSales: stallsData.reduce((sum, stall) => sum + stall.totalSales, 0),
     totalTransactions: stallsData.reduce((sum, stall) => sum + stall.transactionCount, 0),
@@ -156,39 +100,19 @@ const StallsReport = () => {
 
   const categories = ['all', ...new Set(stallsData.map(stall => stall.category))];
 
-  // ==================== DATA PROCESSING ====================
-  
   const getProcessedData = () => {
     let filtered = [...stallsData];
-
-    if (filterCategory !== 'all') {
-      filtered = filtered.filter(stall => stall.category === filterCategory);
-    }
-
+    if (filterCategory !== 'all') filtered = filtered.filter(stall => stall.category === filterCategory);
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(stall => 
-        stall.businessName.toLowerCase().includes(query) 
-        
-      );
+      filtered = filtered.filter(stall => stall.businessName.toLowerCase().includes(query));
     }
-
     switch (sortBy) {
-      case 'highest':
-        filtered.sort((a, b) => b.totalSales - a.totalSales);
-        break;
-      case 'lowest':
-        filtered.sort((a, b) => a.totalSales - b.totalSales);
-        break;
-      case 'transactions':
-        filtered.sort((a, b) => b.transactionCount - a.transactionCount);
-        break;
-      case 'default':
-      default:
-        filtered.sort((a, b) => a.businessName.localeCompare(b.businessName));
-        break;
+      case 'highest': filtered.sort((a, b) => b.totalSales - a.totalSales); break;
+      case 'lowest': filtered.sort((a, b) => a.totalSales - b.totalSales); break;
+      case 'transactions': filtered.sort((a, b) => b.transactionCount - a.transactionCount); break;
+      default: filtered.sort((a, b) => a.businessName.localeCompare(b.businessName)); break;
     }
-
     return filtered;
   };
 
@@ -196,700 +120,80 @@ const StallsReport = () => {
   const topPerformer = processedData.length > 0 ? processedData[0] : null;
   const bottomPerformer = processedData.length > 0 ? processedData[processedData.length - 1] : null;
 
-  // ==================== NEW: CHART DATA ====================
-  
-  /**
-   * Prepare comparison data for analytics chart
-   * Compares top vs bottom performer
-   */
   const chartData = useMemo(() => {
-    if (!topPerformer || !bottomPerformer || processedData.length < 2) {
-      return null;
-    }
-
+    if (!topPerformer || !bottomPerformer || processedData.length < 2) return null;
     return [
-      {
-        name: topPerformer.businessName.length > 20 
-          ? topPerformer.businessName.substring(0, 20) + '...' 
-          : topPerformer.businessName,
-        'Total Sales (₱)': topPerformer.totalSales,
-        'Transactions': topPerformer.transactionCount,
-      },
-      {
-        name: bottomPerformer.businessName.length > 20 
-          ? bottomPerformer.businessName.substring(0, 20) + '...' 
-          : bottomPerformer.businessName,
-        'Total Sales (₱)': bottomPerformer.totalSales,
-        'Transactions': bottomPerformer.transactionCount,
-      }
+      { name: topPerformer.businessName.length > 20 ? topPerformer.businessName.substring(0, 20) + '...' : topPerformer.businessName, 'Total Sales (₱)': topPerformer.totalSales, 'Transactions': topPerformer.transactionCount },
+      { name: bottomPerformer.businessName.length > 20 ? bottomPerformer.businessName.substring(0, 20) + '...' : bottomPerformer.businessName, 'Total Sales (₱)': bottomPerformer.totalSales, 'Transactions': bottomPerformer.transactionCount }
     ];
   }, [topPerformer, bottomPerformer, processedData]);
 
-  // ==================== EVENT HANDLERS ====================
-  
-  const handleRefresh = () => {
-    fetchStallsReport();
+  const formatMonthDisplay = (monthString) => {
+    const [year, month] = monthString.split('-');
+    return new Date(year, month - 1).toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
   };
 
   const handleExport = () => {
-    const headers = ['Stall Name', 'Vendor', 'Total Sales', 'Transactions', 'Points Earned', 'Points Redeemed', 'Category'];
-    const rows = processedData.map(stall => [
-      stall.businessName,
-      stall.totalSales.toFixed(2),
-      stall.transactionCount,
-      stall.pointsEarned,
-      stall.pointsRedeemed,
-      stall.category
-    ]);
-
-    const csvContent = [
-      headers.join(','),
-      ...rows.map(row => row.join(','))
-    ].join('\n');
-
+    const headers = ['Stall Name', 'Total Sales', 'Transactions', 'Points Earned', 'Points Redeemed', 'Category'];
+    const rows = processedData.map(stall => [stall.businessName, stall.totalSales.toFixed(2), stall.transactionCount, stall.pointsEarned, stall.pointsRedeemed, stall.category]);
+    const csvContent = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `stalls-report-${viewMode === 'daily' ? selectedDate : 'all-time'}.csv`;
+    a.download = viewMode === 'daily' ? `stalls-report-${selectedDate}.csv` : `stalls-report-${selectedMonth}.csv`;
     a.click();
     window.URL.revokeObjectURL(url);
   };
 
   const printReport = () => {
-    if (processedData.length === 0) {
-      alert('No stalls data available to print.');
-      return;
-    }
-
-    // Get top 5 stalls by sales
-    const topStalls = [...processedData]
-      .sort((a, b) => b.totalSales - a.totalSales)
-      .slice(0, 5);
-
-    // Calculate max sales for graph scaling
-    const maxSales = topStalls.length > 0 ? topStalls[0].totalSales : 0;
-
-    const printWindow = window.open('', '_blank');
-    printWindow.document.write(`
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>Stalls Report - ${viewMode === 'daily' ? selectedDate : 'All Time'}</title>
-        <style>
-          @media print {
-            @page { margin: 1cm; }
-            body { margin: 0; padding: 20px; }
-          }
-          body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            padding: 30px;
-            background: white;
-            color: #000;
-            max-width: 1200px;
-            margin: 0 auto;
-          }
-          .header {
-            text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 3px solid #000;
-            padding-bottom: 20px;
-          }
-          .header h1 {
-            margin: 0 0 10px 0;
-            font-size: 28px;
-            color: #000;
-            font-weight: bold;
-          }
-          .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 30px;
-          }
-          .summary-card {
-            background: #f0f0f0;
-            padding: 15px;
-            border-radius: 5px;
-            text-align: center;
-          }
-          .summary-card h3 {
-            margin: 0 0 8px 0;
-            font-size: 12px;
-            color: #666;
-            text-transform: uppercase;
-          }
-          .summary-card p {
-            margin: 0;
-            font-size: 20px;
-            font-weight: bold;
-            color: #000;
-          }
-          .section-title {
-            margin: 40px 0 20px 0;
-            font-size: 20px;
-            font-weight: bold;
-            color: #000;
-            border-bottom: 2px solid #000;
-            padding-bottom: 10px;
-          }
-          table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 30px;
-            font-size: 12px;
-          }
-          th {
-            background: #000;
-            color: white;
-            padding: 12px 8px;
-            text-align: left;
-            font-weight: bold;
-            font-size: 11px;
-            text-transform: uppercase;
-          }
-          td {
-            padding: 10px 8px;
-            border-bottom: 1px solid #ddd;
-          }
-          tr:nth-child(even) {
-            background: #f9f9f9;
-          }
-          .total-row {
-            font-weight: bold;
-            background: #e8f5e9 !important;
-            border-top: 2px solid #4caf50;
-          }
-          .top-stalls-section {
-            margin-top: 40px;
-            page-break-before: always;
-          }
-          .graph-container {
-            margin-top: 30px;
-            padding: 20px;
-            background: #f9f9f9;
-            border-radius: 8px;
-          }
-          .graph-bar {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-            page-break-inside: avoid;
-          }
-          .graph-label {
-            width: 200px;
-            font-size: 12px;
-            font-weight: bold;
-            padding-right: 10px;
-            text-align: right;
-          }
-          .graph-bar-container {
-            flex: 1;
-            background: #e0e0e0;
-            height: 30px;
-            border-radius: 4px;
-            position: relative;
-            overflow: hidden;
-          }
-          .graph-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #10b981, #059669);
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding-right: 10px;
-            color: white;
-            font-size: 11px;
-            font-weight: bold;
-            transition: width 0.3s ease;
-          }
-          .rank-badge {
-            display: inline-block;
-            width: 24px;
-            height: 24px;
-            line-height: 24px;
-            text-align: center;
-            border-radius: 50%;
-            font-weight: bold;
-            font-size: 11px;
-            margin-right: 8px;
-          }
-          .rank-1 { background: #ffd700; color: #000; }
-          .rank-2 { background: #c0c0c0; color: #000; }
-          .rank-3 { background: #cd7f32; color: #fff; }
-          .rank-other { background: #e0e0e0; color: #666; }
-        </style>
-      </head>
-      <body>
-        <div class="header">
-          <h1>STALLS SALES REPORT</h1>
-          <p>PayTap Cafeteria System</p>
-          <p>${viewMode === 'daily' 
-            ? `Report Date: ${new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`
-            : 'All-Time Sales Report'
-          }</p>
-          <p>Generated: ${new Date().toLocaleString()}</p>
-        </div>
-        
-        <div class="summary-grid">
-          <div class="summary-card">
-            <h3>Total Sales</h3>
-            <p>₱${overallStats.totalSales.toFixed(2)}</p>
-          </div>
-          <div class="summary-card">
-            <h3>Transactions</h3>
-            <p>${overallStats.totalTransactions}</p>
-          </div>
-          <div class="summary-card">
-            <h3>Active Stalls</h3>
-            <p>${overallStats.totalStalls}</p>
-          </div>
-        </div>
-
-        <h2 class="section-title">ALL STALLS SALES REPORT</h2>
-        <table>
-          <thead>
-            <tr>
-              <th style="width: 5%;">#</th>
-              <th style="width: 35%;">Stall Name</th>
-              <th style="width: 20%;">Category</th>
-              <th style="width: 20%; text-align: right;">Sales</th>
-              <th style="width: 20%; text-align: right;">Transactions</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${processedData.map((stall, index) => `
-              <tr>
-                <td>${index + 1}</td>
-                <td><strong>${stall.businessName}</strong></td>
-                <td>${stall.category}</td>
-                <td style="text-align: right;"><strong>₱${stall.totalSales.toFixed(2)}</strong></td>
-                <td style="text-align: right;">${stall.transactionCount}</td>
-              </tr>
-            `).join('')}
-            <tr class="total-row">
-              <td colspan="3" style="text-align: right;"><strong>TOTALS:</strong></td>
-              <td style="text-align: right;"><strong>₱${overallStats.totalSales.toFixed(2)}</strong></td>
-              <td style="text-align: right;"><strong>${overallStats.totalTransactions}</strong></td>
-            </tr>
-          </tbody>
-        </table>
-
-        <div class="top-stalls-section">
-          <h2 class="section-title">TOP 5 PERFORMING STALLS</h2>
-          
-          <table>
-            <thead>
-              <tr>
-                <th style="width: 8%;">Rank</th>
-                <th style="width: 35%;">Stall Name</th>
-                <th style="width: 20%;">Category</th>
-                <th style="width: 17%; text-align: right;">Sales</th>
-                <th style="width: 20%; text-align: right;">Transactions</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${topStalls.map((stall, index) => `
-                <tr>
-                  <td style="text-align: center;">
-                    <span class="rank-badge rank-${index < 3 ? index + 1 : 'other'}">${index + 1}</span>
-                  </td>
-                  <td><strong>${stall.businessName}</strong></td>
-                  <td>${stall.category}</td>
-                  <td style="text-align: right;"><strong>₱${stall.totalSales.toFixed(2)}</strong></td>
-                  <td style="text-align: right;">${stall.transactionCount}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-
-          <div class="graph-container">
-            <h3 style="margin-top: 0; margin-bottom: 20px; font-size: 16px;">Sales Performance Comparison</h3>
-            ${topStalls.map((stall, index) => {
-              const percentage = maxSales > 0 ? (stall.totalSales / maxSales) * 100 : 0;
-              return `
-                <div class="graph-bar">
-                  <div class="graph-label">
-                    <span class="rank-badge rank-${index < 3 ? index + 1 : 'other'}">${index + 1}</span>
-                    ${stall.businessName.length > 20 ? stall.businessName.substring(0, 20) + '...' : stall.businessName}
-                  </div>
-                  <div class="graph-bar-container">
-                    <div class="graph-bar-fill" style="width: ${percentage}%;">
-                      ₱${stall.totalSales.toFixed(2)}
-                    </div>
-                  </div>
-                </div>
-              `;
-            }).join('')}
-          </div>
-        </div>
-      </body>
-      </html>
-    `);
-    printWindow.document.close();
-    
-    setTimeout(() => {
-      printWindow.print();
-    }, 250);
+    if (processedData.length === 0) { alert('No data'); return; }
+    const topStalls = [...processedData].sort((a, b) => b.totalSales - a.totalSales).slice(0, 5);
+    const maxSales = topStalls[0]?.totalSales || 0;
+    const reportPeriod = viewMode === 'daily' ? `Report Date: ${new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}` : `Report Period: ${formatMonthDisplay(selectedMonth)}`;
+    const w = window.open('', '_blank');
+    w.document.write(`<!DOCTYPE html><html><head><title>Report</title><style>@media print{@page{margin:1cm}body{margin:0;padding:20px}}body{font-family:'Segoe UI',Arial,sans-serif;padding:30px;background:white;color:#000;max-width:1200px;margin:0 auto}.header{text-align:center;margin-bottom:30px;border-bottom:3px solid #000;padding-bottom:20px}.header h1{margin:0 0 10px 0;font-size:28px;font-weight:bold}.summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-bottom:30px}.summary-card{background:#f0f0f0;padding:15px;border-radius:5px;text-align:center}.summary-card h3{margin:0 0 8px 0;font-size:12px;color:#666;text-transform:uppercase}.summary-card p{margin:0;font-size:20px;font-weight:bold}.section-title{margin:40px 0 20px 0;font-size:20px;font-weight:bold;border-bottom:2px solid #000;padding-bottom:10px}table{width:100%;border-collapse:collapse;margin-bottom:30px;font-size:12px}th{background:#000;color:white;padding:12px 8px;text-align:left;font-weight:bold;font-size:11px;text-transform:uppercase}td{padding:10px 8px;border-bottom:1px solid #ddd}tr:nth-child(even){background:#f9f9f9}.total-row{font-weight:bold;background:#e8f5e9!important;border-top:2px solid #4caf50}.top-stalls-section{margin-top:40px;page-break-before:always}.graph-container{margin-top:30px;padding:20px;background:#f9f9f9;border-radius:8px}.graph-bar{display:flex;align-items:center;margin-bottom:15px;page-break-inside:avoid}.graph-label{width:200px;font-size:12px;font-weight:bold;padding-right:10px;text-align:right}.graph-bar-container{flex:1;background:#e0e0e0;height:30px;border-radius:4px;overflow:hidden}.graph-bar-fill{height:100%;background:linear-gradient(90deg,#10b981,#059669);display:flex;align-items:center;justify-content:flex-end;padding-right:10px;color:white;font-size:11px;font-weight:bold}.rank-badge{display:inline-block;width:24px;height:24px;line-height:24px;text-align:center;border-radius:50%;font-weight:bold;font-size:11px;margin-right:8px}.rank-1{background:#ffd700;color:#000}.rank-2{background:#c0c0c0;color:#000}.rank-3{background:#cd7f32;color:#fff}.rank-other{background:#e0e0e0;color:#666}</style></head><body><div class="header"><h1>STALLS SALES REPORT</h1><p>PayTap Cafeteria System</p><p>${reportPeriod}</p><p>Generated: ${new Date().toLocaleString()}</p></div><div class="summary-grid"><div class="summary-card"><h3>Total Sales</h3><p>₱${overallStats.totalSales.toFixed(2)}</p></div><div class="summary-card"><h3>Transactions</h3><p>${overallStats.totalTransactions}</p></div><div class="summary-card"><h3>Active Stalls</h3><p>${overallStats.totalStalls}</p></div></div><h2 class="section-title">ALL STALLS SALES REPORT</h2><table><thead><tr><th style="width:5%">#</th><th style="width:35%">Stall Name</th><th style="width:20%">Category</th><th style="width:20%;text-align:right">Sales</th><th style="width:20%;text-align:right">Transactions</th></tr></thead><tbody>${processedData.map((s,i)=>`<tr><td>${i+1}</td><td><strong>${s.businessName}</strong></td><td>${s.category}</td><td style="text-align:right"><strong>₱${s.totalSales.toFixed(2)}</strong></td><td style="text-align:right">${s.transactionCount}</td></tr>`).join('')}<tr class="total-row"><td colspan="3" style="text-align:right"><strong>TOTALS:</strong></td><td style="text-align:right"><strong>₱${overallStats.totalSales.toFixed(2)}</strong></td><td style="text-align:right"><strong>${overallStats.totalTransactions}</strong></td></tr></tbody></table><div class="top-stalls-section"><h2 class="section-title">TOP 5 PERFORMING STALLS</h2><table><thead><tr><th style="width:8%">Rank</th><th style="width:35%">Stall Name</th><th style="width:20%">Category</th><th style="width:17%;text-align:right">Sales</th><th style="width:20%;text-align:right">Transactions</th></tr></thead><tbody>${topStalls.map((s,i)=>`<tr><td style="text-align:center"><span class="rank-badge rank-${i<3?i+1:'other'}">${i+1}</span></td><td><strong>${s.businessName}</strong></td><td>${s.category}</td><td style="text-align:right"><strong>₱${s.totalSales.toFixed(2)}</strong></td><td style="text-align:right">${s.transactionCount}</td></tr>`).join('')}</tbody></table><div class="graph-container"><h3 style="margin-top:0;margin-bottom:20px;font-size:16px">Sales Performance Comparison</h3>${topStalls.map((s,i)=>`<div class="graph-bar"><div class="graph-label"><span class="rank-badge rank-${i<3?i+1:'other'}">${i+1}</span>${s.businessName.length>20?s.businessName.substring(0,20)+'...':s.businessName}</div><div class="graph-bar-container"><div class="graph-bar-fill" style="width:${maxSales>0?(s.totalSales/maxSales)*100:0}%">₱${s.totalSales.toFixed(2)}</div></div></div>`).join('')}</div></div></body></html>`);
+    w.document.close();
+    setTimeout(() => w.print(), 250);
   };
 
-  const formatDateRange = (startTime, endTime) => {
-    const start = new Date(startTime);
-    const end = new Date(endTime);
-    return `${start.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} - ${end.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}`;
-  };
-
-  // ==================== RENDER ====================
-  
   return (
-    
     <div className="main-content">
-        <Sidebar />
+      <Sidebar />
       <div className="stalls-report-container">
-          <TopBar />
-      {/* Header Section */}
-      <div className="report-header">
-        <div className="header-content">
-          <div className="header-title-section">
-            <h1 className="report-title">
-              <FaChartBar className="title-icon" />
-              Stalls Sales Report
-            </h1>
-            <p className="report-subtitle">Comprehensive stall performance analytics</p>
+        <TopBar />
+        <div className="report-header">
+          <div className="header-content">
+            <div className="header-title-section">
+              <h1 className="report-title"><FaChartBar className="title-icon" />Stalls Sales Report</h1>
+              <p className="report-subtitle">Comprehensive stall performance analytics</p>
+            </div>
+            <div className="header-actions">
+              <button className="action-btn refresh-btn" onClick={fetchStallsReport} disabled={isLoading}><FaSync className={isLoading?'spinning':''} />Refresh</button>
+              <button className="action-btn export-btn" onClick={handleExport} disabled={processedData.length===0}><FaDownload />Export CSV</button>
+              <button className="action-btn print-btn" onClick={printReport} disabled={processedData.length===0}><FaPrint />Print Report</button>
+              <button className="action-btn analytics-btn" onClick={()=>setShowChart(!showChart)} disabled={processedData.length<2}><FaChartLine />{showChart?'Hide':'Show'} Analytics</button>
+            </div>
           </div>
+          <div className="date-controls-wrapper">
+            <div className="view-mode-selector">
+              <button className={`mode-btn ${viewMode==='daily'?'active':''}`} onClick={()=>setViewMode('daily')}><FaCalendarAlt />Daily Sales</button>
+              <button className={`mode-btn ${viewMode==='monthly'?'active':''}`} onClick={()=>setViewMode('monthly')}><FaCalendar />Monthly Sales</button>
+            </div>
+            {viewMode==='daily'&&(<div className="date-selector"><FaCalendarAlt className="date-icon" /><input type="date" value={selectedDate} onChange={(e)=>setSelectedDate(e.target.value)} className="date-input" max={new Date().toISOString().split('T')[0]} /></div>)}
+            {viewMode==='monthly'&&(<div className="date-selector"><FaCalendar className="date-icon" /><input type="month" value={selectedMonth} onChange={(e)=>setSelectedMonth(e.target.value)} className="date-input" max={new Date().toISOString().slice(0,7)} /></div>)}
+          </div>
+        </div>
+        <div className="stats-grid">
           
-          <div className="header-actions">
-            <button 
-              className="action-btn refresh-btn"
-              onClick={handleRefresh}
-              disabled={isLoading}
-            >
-              <FaSync className={isLoading ? 'spinning' : ''} />
-              Refresh
-            </button>
-            <button 
-              className="action-btn export-btn"
-              onClick={handleExport}
-              disabled={processedData.length === 0}
-            >
-              <FaDownload />
-              Export CSV
-            </button>
-            <button 
-              className="action-btn print-btn"
-              onClick={printReport}
-              disabled={processedData.length === 0}
-            >
-              <FaPrint />
-              Print Report
-            </button>
-            {/* NEW: Analytics Button */}
-            <button 
-              className="action-btn analytics-btn"
-              onClick={() => setShowChart(!showChart)}
-              disabled={processedData.length < 2}
-            >
-              <FaChartLine />
-              {showChart ? 'Hide' : 'Show'} Analytics
-            </button>
-          </div>
+          <div className="stat-card active-stalls"><div className="stat-content"><p className="stat-label">Active Stalls</p><p className="stat-value">{overallStats.totalStalls}</p></div></div>
         </div>
-
-        {/* NEW: View Mode Toggle + Date Selector */}
-        <div className="date-controls-wrapper">
-          {/* View Mode Selector */}
-          <div className="view-mode-selector">
-            <button
-              className={`mode-btn ${viewMode === 'daily' ? 'active' : ''}`}
-              onClick={() => setViewMode('daily')}
-            >
-              <FaCalendarAlt />
-              Daily Sales
-            </button>
-            <button
-              className={`mode-btn ${viewMode === 'all-time' ? 'active' : ''}`}
-              onClick={() => setViewMode('all-time')}
-            >
-              <FaInfinity />
-              All-Time Sales
-            </button>
-          </div>
-
-          {/* Date Selector */}
-          <div className={`date-selector ${viewMode === 'all-time' ? 'disabled' : ''}`}>
-            <FaCalendarAlt className="date-icon" />
-            <input
-              type="date"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-              className="date-input"
-              max={new Date().toISOString().split('T')[0]}
-              disabled={viewMode === 'all-time'}
-            />
-          </div>
-        </div>
+        {showChart&&chartData&&sortBy==='highest'&&(<div className="analytics-section"><div className="analytics-header"><h2 className="analytics-title"><FaChartLine className="chart-icon" />Performance Comparison Analytics</h2><div className="chart-type-toggle"><button className={`chart-toggle-btn ${chartType==='bar'?'active':''}`} onClick={()=>setChartType('bar')}><FaChartBar /> Bar Chart</button><button className={`chart-toggle-btn ${chartType==='line'?'active':''}`} onClick={()=>setChartType('line')}><FaChartLine /> Line Chart</button></div></div><div className="chart-container"><ResponsiveContainer width="100%" height={350}>{chartType==='bar'?(<BarChart data={chartData} margin={{top:20,right:30,left:20,bottom:60}}><CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" /><XAxis dataKey="name" angle={-45} textAnchor="end" height={80} tick={{fill:'#6b7280',fontSize:12}} /><YAxis yAxisId="left" tick={{fill:'#6b7280',fontSize:12}} label={{value:'Total Sales (₱)',angle:-90,position:'insideLeft',style:{fill:'#6b7280'}}} /><YAxis yAxisId="right" orientation="right" tick={{fill:'#6b7280',fontSize:12}} label={{value:'Transactions',angle:90,position:'insideRight',style:{fill:'#6b7280'}}} /><Tooltip contentStyle={{backgroundColor:'#ffffff',border:'1px solid #e5e7eb',borderRadius:'8px'}} formatter={(value,name)=>[name==='Total Sales (₱)'?`₱${value.toFixed(2)}`:value,name]} /><Legend wrapperStyle={{paddingTop:'20px'}} /><Bar yAxisId="left" dataKey="Total Sales (₱)" fill="#10b981" radius={[8,8,0,0]} /><Bar yAxisId="right" dataKey="Transactions" fill="#3b82f6" radius={[8,8,0,0]} /></BarChart>):(<LineChart data={chartData} margin={{top:20,right:30,left:20,bottom:60}}><CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" /><XAxis dataKey="name" angle={-45} textAnchor="end" height={80} tick={{fill:'#6b7280',fontSize:12}} /><YAxis yAxisId="left" tick={{fill:'#6b7280',fontSize:12}} label={{value:'Total Sales (₱)',angle:-90,position:'insideLeft',style:{fill:'#6b7280'}}} /><YAxis yAxisId="right" orientation="right" tick={{fill:'#6b7280',fontSize:12}} label={{value:'Transactions',angle:90,position:'insideRight',style:{fill:'#6b7280'}}} /><Tooltip contentStyle={{backgroundColor:'#ffffff',border:'1px solid #e5e7eb',borderRadius:'8px'}} formatter={(value,name)=>[name==='Total Sales (₱)'?`₱${value.toFixed(2)}`:value,name]} /><Legend wrapperStyle={{paddingTop:'20px'}} /><Line yAxisId="left" type="monotone" dataKey="Total Sales (₱)" stroke="#10b981" strokeWidth={3} dot={{fill:'#10b981',r:6}} /><Line yAxisId="right" type="monotone" dataKey="Transactions" stroke="#3b82f6" strokeWidth={3} dot={{fill:'#3b82f6',r:6}} /></LineChart>)}</ResponsiveContainer></div></div>)}
+        {topPerformer&&bottomPerformer&&sortBy==='highest'&&processedData.length>1&&(<div className="performance-highlights"><div className="performer-card top-performer"><div className="performer-badge"><FaTrophy className="trophy-icon" /><span>Top Performer</span></div><h3 className="performer-name">{topPerformer.businessName}</h3><p className="performer-sales">₱{topPerformer.totalSales.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</p><p className="performer-transactions">{topPerformer.transactionCount} transactions</p></div><div className="performer-card bottom-performer"><div className="performer-badge"><FaArrowDown className="arrow-icon" /><span>Low Performer</span></div><h3 className="performer-name">{bottomPerformer.businessName}</h3><p className="performer-sales">₱{bottomPerformer.totalSales.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</p><p className="performer-transactions">{bottomPerformer.transactionCount} transactions</p></div></div>)}
+        <div className="controls-section"><div className="stalls-search-box"><input type="text" placeholder="Search by stall or vendor name..." value={searchQuery} onChange={(e)=>setSearchQuery(e.target.value)} className="stalls-search-input" /></div><div className="filter-controls"><div className="stalls-filter-group"><label className="stalls-filter-label">Sort By:</label><select value={sortBy} onChange={(e)=>setSortBy(e.target.value)} className="filter-select"><option value="default">Default Order</option><option value="highest">Highest Sales</option><option value="lowest">Lowest Sales</option><option value="transactions">Most Transactions</option></select></div><div className="stalls-filter-group"><label className="stalls-filter-label">Category:</label><select value={filterCategory} onChange={(e)=>setFilterCategory(e.target.value)} className="filter-select">{categories.map(c=>(<option key={c} value={c}>{c==='all'?'All Categories':c}</option>))}</select></div></div></div>
+        <div className="stalls-table-container">{isLoading?(<div className="loading-state"><FaSync className="spinning" /><p>Loading data...</p></div>):processedData.length===0?(<div className="empty-state"><FaStore className="empty-icon" /><p>No stalls found</p></div>):(<table className="stalls-table"><thead><tr><th className="table-header rank-col">#</th><th className="table-header stall-col">Stall Information</th><th className="table-header sales-col">Total Sales</th><th className="table-header transactions-col">Transactions</th><th className="table-header points-col">Points Earned</th></tr></thead><tbody>{processedData.map((stall,index)=>(<tr key={stall.id} className="table-row"><td className="table-cell rank-cell">{sortBy==='highest'&&index===0&&<FaTrophy className="rank-trophy gold" />}{sortBy==='highest'&&index===1&&<FaTrophy className="rank-trophy silver" />}{sortBy==='highest'&&index===2&&<FaTrophy className="rank-trophy bronze" />}{(sortBy!=='highest'||index>2)&&<span className="rank-number">{index+1}</span>}</td><td className="table-cell stall-info-cell"><div className="stall-info"><p className="business-name">{stall.businessName}</p><span className="category-badge">{stall.category}</span></div></td><td className="table-cell sales-cell"><span className="sales-amount">₱{stall.totalSales.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</span></td><td className="table-cell transactions-cell"><span className="transaction-count">{stall.transactionCount}</span></td><td className="table-cell points-cell"><span className="points-earned">+{stall.pointsEarned} pts</span></td></tr>))}</tbody></table>)}</div>
+        <div className="report-footer"><p className="footer-text">Showing {processedData.length} of {stallsData.length} stalls{filterCategory!=='all'&&` • Filtered by: ${filterCategory}`}{searchQuery&&` • Search: "${searchQuery}"`}</p><p className="footer-timestamp">Report generated: {new Date().toLocaleString('en-US',{dateStyle:'medium',timeStyle:'short'})}</p></div>
       </div>
-
-      {/* Overall Statistics Cards */}
-      <div className="stats-grid">
-        <div className="stat-card active-stalls">
-          <div className="stat-content">
-            <p className="stat-label">Active Stalls</p>
-            <p className="stat-value">{overallStats.totalStalls}</p>
-          </div>
-        </div>
-      </div>
-
-      {/* NEW: ANALYTICS CHART SECTION */}
-      {showChart && chartData && sortBy === 'highest' && (
-        <div className="analytics-section">
-          <div className="analytics-header">
-            <h2 className="analytics-title">
-              <FaChartLine className="chart-icon" />
-              Performance Comparison Analytics
-            </h2>
-            <div className="chart-type-toggle">
-              <button
-                className={`chart-toggle-btn ${chartType === 'bar' ? 'active' : ''}`}
-                onClick={() => setChartType('bar')}
-              >
-                <FaChartBar /> Bar Chart
-              </button>
-              <button
-                className={`chart-toggle-btn ${chartType === 'line' ? 'active' : ''}`}
-                onClick={() => setChartType('line')}
-              >
-                <FaChartLine /> Line Chart
-              </button>
-            </div>
-          </div>
-
-          <div className="chart-container">
-            <ResponsiveContainer width="100%" height={350}>
-              {chartType === 'bar' ? (
-                <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                  <XAxis 
-                    dataKey="name" 
-                    angle={-45} 
-                    textAnchor="end" 
-                    height={80}
-                    tick={{ fill: '#6b7280', fontSize: 12 }}
-                  />
-                  <YAxis 
-                    yAxisId="left"
-                    tick={{ fill: '#6b7280', fontSize: 12 }}
-                    label={{ value: 'Total Sales (₱)', angle: -90, position: 'insideLeft', style: { fill: '#6b7280' } }}
-                  />
-                  <YAxis 
-                    yAxisId="right" 
-                    orientation="right"
-                    tick={{ fill: '#6b7280', fontSize: 12 }}
-                    label={{ value: 'Transactions', angle: 90, position: 'insideRight', style: { fill: '#6b7280' } }}
-                  />
-                  <Tooltip 
-                    contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e5e7eb', borderRadius: '8px' }}
-                    formatter={(value, name) => [
-                      name === 'Total Sales (₱)' ? `₱${value.toFixed(2)}` : value,
-                      name
-                    ]}
-                  />
-                  <Legend wrapperStyle={{ paddingTop: '20px' }} />
-                  <Bar yAxisId="left" dataKey="Total Sales (₱)" fill="#10b981" radius={[8, 8, 0, 0]} />
-                  <Bar yAxisId="right" dataKey="Transactions" fill="#3b82f6" radius={[8, 8, 0, 0]} />
-                </BarChart>
-              ) : (
-                <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                  <XAxis 
-                    dataKey="name" 
-                    angle={-45} 
-                    textAnchor="end" 
-                    height={80}
-                    tick={{ fill: '#6b7280', fontSize: 12 }}
-                  />
-                  <YAxis 
-                    yAxisId="left"
-                    tick={{ fill: '#6b7280', fontSize: 12 }}
-                    label={{ value: 'Total Sales (₱)', angle: -90, position: 'insideLeft', style: { fill: '#6b7280' } }}
-                  />
-                  <YAxis 
-                    yAxisId="right" 
-                    orientation="right"
-                    tick={{ fill: '#6b7280', fontSize: 12 }}
-                    label={{ value: 'Transactions', angle: 90, position: 'insideRight', style: { fill: '#6b7280' } }}
-                  />
-                  <Tooltip 
-                    contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e5e7eb', borderRadius: '8px' }}
-                    formatter={(value, name) => [
-                      name === 'Total Sales (₱)' ? `₱${value.toFixed(2)}` : value,
-                      name
-                    ]}
-                  />
-                  <Legend wrapperStyle={{ paddingTop: '20px' }} />
-                  <Line yAxisId="left" type="monotone" dataKey="Total Sales (₱)" stroke="#10b981" strokeWidth={3} dot={{ fill: '#10b981', r: 6 }} />
-                  <Line yAxisId="right" type="monotone" dataKey="Transactions" stroke="#3b82f6" strokeWidth={3} dot={{ fill: '#3b82f6', r: 6 }} />
-                </LineChart>
-              )}
-            </ResponsiveContainer>
-          </div>
-        </div>
-      )}
-
-      {/* Top & Bottom Performers */}
-      {topPerformer && bottomPerformer && sortBy === 'highest' && processedData.length > 1 && (
-        <div className="performance-highlights">
-          <div className="performer-card top-performer">
-            <div className="performer-badge">
-              <FaTrophy className="trophy-icon" />
-              <span>Top Performer</span>
-            </div>
-            <h3 className="performer-name">{topPerformer.businessName}</h3>
-            <p className="performer-sales">₱{topPerformer.totalSales.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-            <p className="performer-transactions">{topPerformer.transactionCount} transactions</p>
-          </div>
-
-          <div className="performer-card bottom-performer">
-            <div className="performer-badge">
-              <FaArrowDown className="arrow-icon" />
-              <span>Low Performer</span>
-            </div>
-            <h3 className="performer-name">{bottomPerformer.businessName}</h3>
-            <p className="performer-sales">₱{bottomPerformer.totalSales.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-            <p className="performer-transactions">{bottomPerformer.transactionCount} transactions</p>
-          </div>
-        </div>
-      )}
-
-      {/* Filters and Controls */}
-      <div className="controls-section">
-        <div className="stalls-search-box">
-          <input
-            type="text"
-            placeholder="Search by stall or vendor name..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="stalls-search-input"
-          />
-        </div>
-
-        <div className="filter-controls">
-          <div className="stalls-filter-group">
-            <label className="stalls-filter-label">
-              Sort By:
-            </label>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="filter-select"
-            >
-              <option value="default">Default Order</option>
-              <option value="highest">Highest Sales</option>
-              <option value="lowest">Lowest Sales</option>
-              <option value="transactions">Most Transactions</option>
-            </select>
-          </div>
-
-          <div className="stalls-filter-group">
-            <label className="stalls-filter-label">Category:</label>
-            <select
-              value={filterCategory}
-              onChange={(e) => setFilterCategory(e.target.value)}
-              className="filter-select"
-            >
-              {categories.map(category => (
-                <option key={category} value={category}>
-                  {category === 'all' ? 'All Categories' : category}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </div>
-
-      {/* Stalls Data Table */}
-      <div className="stalls-table-container">
-        {isLoading ? (
-          <div className="loading-state">
-            <FaSync className="spinning" />
-            <p>Loading data...</p>
-          </div>
-        ) : processedData.length === 0 ? (
-          <div className="empty-state">
-            <FaStore className="empty-icon" />
-            <p>No stalls found matching your criteria</p>
-          </div>
-        ) : (
-          <table className="stalls-table">
-            <thead>
-              <tr>
-                <th className="table-header rank-col">#</th>
-                <th className="table-header stall-col">Stall Information</th>
-                <th className="table-header sales-col">Total Sales</th>
-                <th className="table-header transactions-col">Transactions</th>
-                <th className="table-header points-col">Points Earned</th>
-              </tr>
-            </thead>
-            <tbody>
-              {processedData.map((stall, index) => (
-                <tr key={stall.id} className="table-row">
-                  <td className="table-cell rank-cell">
-                    {sortBy === 'highest' && index === 0 && (
-                      <FaTrophy className="rank-trophy gold" />
-                    )}
-                    {sortBy === 'highest' && index === 1 && (
-                      <FaTrophy className="rank-trophy silver" />
-                    )}
-                    {sortBy === 'highest' && index === 2 && (
-                      <FaTrophy className="rank-trophy bronze" />
-                    )}
-                    {(sortBy !== 'highest' || index > 2) && (
-                      <span className="rank-number">{index + 1}</span>
-                    )}
-                  </td>
-                  
-                  <td className="table-cell stall-info-cell">
-                    <div className="stall-info">
-                      <p className="business-name">{stall.businessName}</p>
-                      <span className="category-badge">{stall.category}</span>
-                    </div>
-                  </td>
-                  
-                  <td className="table-cell sales-cell">
-                    <span className="sales-amount">
-                      ₱{stall.totalSales.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                    </span>
-                  </td>
-                  
-                  <td className="table-cell transactions-cell">
-                    <span className="transaction-count">{stall.transactionCount}</span>
-                  </td>
-                  
-                  <td className="table-cell points-cell">
-                    <span className="points-earned">+{stall.pointsEarned} pts</span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
-
-      {/* Footer Summary */}
-      <div className="report-footer">
-        <p className="footer-text">
-          Showing {processedData.length} of {stallsData.length} stalls
-          {filterCategory !== 'all' && ` • Filtered by: ${filterCategory}`}
-          {searchQuery && ` • Search: "${searchQuery}"`}
-        </p>
-        <p className="footer-timestamp">
-          Report generated: {new Date().toLocaleString('en-US', { 
-            dateStyle: 'medium', 
-            timeStyle: 'short' 
-          })}
-        </p>
-      </div>
-    </div>
     </div>
   );
 };

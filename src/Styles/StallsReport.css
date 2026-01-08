@@ -204,10 +204,10 @@
   align-items: center;
   gap: 12px;
   background-color: #f9fafb;
-  padding: 12px 16px;
+  padding: 1px 16px;
   border-radius: 8px;
   border: 1px solid #e5e7eb;
-  width: 250px;
+  width: 210px;
   transition: opacity 0.3s ease;
 }
 
